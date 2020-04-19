@@ -26,24 +26,24 @@ set of questions posed in the handout.
 
   1. Graph theory
 
-    - Overview of this set of experiments
+     - Overview of this set of experiments
 
-    - Review of graph theory and graph representations
+     - Review of graph theory and graph representations
 
   2. Basic data structures
 
-    - Basic data structures for handling graphs
+     - Basic data structures for handling graphs
 
-    - 質疑応答
+     - 質疑応答
 
   3. Graph isomorphism algorithms
 
-    - Basic algorithms for computing graph isomorphisms
+     - Basic algorithms for computing graph isomorphisms
 
-    - Prototype implementation in C
+     - Prototype implementation in C
 
   4. Term unification
 
-    - Introduction to term unification
+     - Introduction to term unification
 
-    - Connection with graph isomorphism problems
+     - Connection with graph isomorphism problems
