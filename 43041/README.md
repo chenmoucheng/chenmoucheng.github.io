@@ -1,6 +1,8 @@
-# 情報通信工学実験第２
+# [情報通信工学実験第２](https://eduweb.sta.kanazawa-u.ac.jp//portal/Public/Syllabus/SyllabusSearchStart.aspx?lct_year=2020&fac_cd=52&lct_no=43041&je_cd=2)
 
-## 2-3 データ構造とアルゴリズム
+## [2-3 データ構造とアルゴリズム](https://chenmoucheng.github.io/43041/)
+
+[Chen-Mou CHENG](mailto:cheng@se.kanazawa-u.ac.jp)
 
 ### 目的
 
