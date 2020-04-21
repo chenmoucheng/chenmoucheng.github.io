@@ -20,6 +20,8 @@ module Main where
   import Data.Graph                    (edges,Graph,Vertex,vertices)
   import Data.Maybe                    (fromJust,isNothing)
   import Data.Array                    (array,(!))
+  import System.Environment            (getArgs,getProgName)
+  import System.Exit                   (ExitCode(..),exitWith)
 
   --
   type NVars = 3
@@ -45,13 +47,15 @@ module Main where
     | Fun0
     | Fun1 Term
     | Fun2 Term Term
+    | Fun3 Term Term Term
     deriving (Eq,Generic,Ord)
 
   instance Show Term where
-    show (Var i)    = "x" ++ show (unMod i)
-    show  Fun0      = "c"
-    show (Fun1 t)   = "f(" ++ show t ++ ")"
-    show (Fun2 t s) = "g(" ++ show t ++ "," ++ show s ++ ")"
+    show (Var i)      = "x" ++ show (unMod i)
+    show  Fun0        = "c"
+    show (Fun1 t)     = "f(" ++ show t ++ ")"
+    show (Fun2 t s)   = "g(" ++ show t ++ "," ++ show s ++ ")"
+    show (Fun3 t s r) = "h(" ++ show t ++ "," ++ show s ++ "," ++ show r ++ ")"
 
   instance Arbitrary Term where
     arbitrary = genericArbitrary
@@ -93,9 +97,10 @@ module Main where
     case m of
       Just v -> return v
       Nothing -> case t of
-        Fun2 s r -> do { v <- toArrayM s ; u <- toArrayM r ; insertTermM t [v,u] }
-        Fun1 s   -> do { v <- toArrayM s ;                   insertTermM t [v] }
-        _        ->                                          insertTermM t []
+        Fun3 s r q -> do { v <- toArrayM s ; u <- toArrayM r ; w <- toArrayM q ; insertTermM t [v,u,w] }
+        Fun2 s r   -> do { v <- toArrayM s ; u <- toArrayM r ;                   insertTermM t [v,u] }
+        Fun1 s     -> do { v <- toArrayM s ;                                     insertTermM t [v] }
+        _          ->                                                            insertTermM t []
 
   toGraph :: Term -> (Graph,Vertex)
   toGraph t = let
@@ -110,8 +115,9 @@ module Main where
       ts = map fromJust ms
       in case (length ts) of
         0 -> Just $ if v < nvars then Var (fromInt v) else Fun0
-        1 -> let [t]   = ts  in Just $ Fun1 t
-        2 -> let [t,s] = ts  in Just $ Fun2 t s
+        1 -> let [t]     = ts in Just $ Fun1 t
+        2 -> let [t,s]   = ts in Just $ Fun2 t s
+        3 -> let [t,s,r] = ts in Just $ Fun3 t s r
         _ -> Nothing
 
   toTerm :: (Graph,Vertex) -> Term
@@ -123,15 +129,23 @@ module Main where
 
   --
   main :: IO ()
-  main = do
-    -- quickCheck prop_toTerm_retract_toGraph_section
+  main = getArgs >>= parse >>= mainLoop
+
+  parse ["-t"] = quickCheck (withMaxSuccess 10000 prop_toTerm_retract_toGraph_section) >> exitWith ExitSuccess
+  parse [v,e]  = return (read v, read e)
+  parse []     = return (8,12)
+  parse _      = getProgName >>= usage >> exitWith ExitSuccess
+
+  usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t | #vertices #edges]"
+
+  mainLoop (v,e) = do
     t <- generate (arbitrary :: Gen Term)
     let
       (g,r) = toGraph t
-      nE = length $ edges g
       nV = length $ vertices g
-      in if nV < nE && nE < 12
+      nE = length $ edges g
+      in if v - 2 < nV && nV < v + 2 && e - 4 < nE && nE < e + 4
         then
           putStrLn $ foldr1 (++) $ map (\(i,j) -> show i ++ " -> " ++ show j ++ "\n") (edges g)
         else
-          main
+          mainLoop (v,e)
