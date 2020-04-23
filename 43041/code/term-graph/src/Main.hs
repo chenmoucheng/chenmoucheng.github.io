@@ -28,22 +28,20 @@ module Main where
   nvars :: Int
   nvars = fromInteger . toInteger . natVal $ (Proxy :: Proxy NVars)
 
-  type FVars = Mod NVars
-
-  fromInt :: Int -> FVars
+  fromInt :: Int -> Mod NVars
   fromInt = fromInteger . toInteger
 
-  toInt :: FVars -> Int
+  toInt :: Mod NVars -> Int
   toInt = fromInteger . toInteger . unMod
 
-  instance Arbitrary FVars where
+  instance Arbitrary (Mod NVars) where
     arbitrary = do
       x <- genericArbitrary
       return $ fromInteger . toInteger . unMod $ x
 
   --
   data Term
-    = Var FVars
+    = Var (Mod NVars)
     | Fun0
     | Fun1 Term
     | Fun2 Term Term
@@ -69,12 +67,10 @@ module Main where
     } deriving (Show)
 
   initMyState :: MyState
-  initMyState = let
-    fvars = [0 .. (nvars - 1)]
-    in MyState {
-        dict = fromList $ map (\i -> (Var $ fromInt i, i)) fvars,
-        grph = zip fvars (repeat [])
-      }
+  initMyState = MyState {
+      dict = fromList [ (Var $ fromInt i, i)  | i <- [0 .. (nvars - 1)] ],
+      grph =          [               (i, []) | i <- [0 .. (nvars - 1)] ]
+    }
 
   sizeMyState = size . dict
 
@@ -103,9 +99,8 @@ module Main where
         _          ->                                                            insertTermM t []
 
   toGraph :: Term -> (Graph,Vertex)
-  toGraph t = let
-    (v,s) = runState (toArrayM t) initMyState
-    in (array (0, sizeMyState s - 1) (grph s), v)
+  toGraph t = (array (0, sizeMyState s - 1) (grph s), v)
+    where (v,s) = runState (toArrayM t) initMyState
 
   --
   toTermM :: Graph -> Vertex -> Maybe Term
@@ -133,7 +128,7 @@ module Main where
 
   parse ["-t"] = quickCheck (withMaxSuccess 10000 prop_toTerm_retract_toGraph_section) >> exitWith ExitSuccess
   parse [v,e]  = return (read v, read e)
-  parse []     = return (8,12)
+  parse []     = return (8,16)
   parse _      = getProgName >>= usage >> exitWith ExitSuccess
 
   usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t | #vertices #edges]"
@@ -141,11 +136,12 @@ module Main where
   mainLoop (v,e) = do
     t <- generate (arbitrary :: Gen Term)
     let
-      (g,r) = toGraph t
-      nV = length $ vertices g
-      nE = length $ edges g
-      in if v - 2 < nV && nV < v + 2 && e - 4 < nE && nE < e + 4
-        then
-          putStrLn $ foldr1 (++) $ map (\(i,j) -> show i ++ " -> " ++ show j ++ "\n") (edges g)
+      (g,_) = toGraph t
+      dV = abs $ v - length (vertices g)
+      dE = abs $ e - length (edges g)
+      in if dV < 2 && dE < 4
+        then do
+          putStrLn $ "; " ++ show t
+          putStr $ foldr1 (++) [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
         else
           mainLoop (v,e)
