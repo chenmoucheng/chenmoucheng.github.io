@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveGeneric        #-}
 {-# LANGUAGE DeriveAnyClass       #-}
 {-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE TemplateHaskell      #-}
 
 module Main where
   import Prelude hiding (lookup)
@@ -19,7 +20,7 @@ module Main where
   import Data.Map                      (fromList,insert,lookup,Map,size)
   import Data.Graph                    (edges,Graph,Vertex,vertices)
   import Data.Maybe                    (fromJust,isNothing)
-  import Data.Array                    (array,(!))
+  import Data.Array                    (array,bounds,elems,indices,listArray,(!))
   import System.Environment            (getArgs,getProgName)
   import System.Exit                   (ExitCode(..),exitWith)
 
@@ -61,18 +62,31 @@ module Main where
   instance ToADTArbitrary Term
 
   --
+  type GraphHom = (Graph,Vertex) -> (Graph,Vertex)
+
+  toGraphHom :: [Vertex] -> GraphHom
+  toGraphHom vs (g,v) = let
+    f = (!) $ listArray (bounds g) ([0 .. nvars - 1] ++ cycle vs)
+    idx = map f (indices g)
+    elm = map (map f) (elems g)
+    in (array (bounds g) (zip idx elm), f v)
+{-
+  instance Arbitrary GraphHom where
+    arbitrary = do
+      p <- genericArbitrary
+      return $ toGraphHom $ map ((+) (nvars - 1)) p
+-}
+  --
   data MyState = MyState {
       dict :: Map Term Vertex,
-      grph :: [(Vertex,[Vertex])]
+      grph :: [[Vertex]]
     } deriving (Show)
 
   initMyState :: MyState
   initMyState = MyState {
-      dict = fromList [ (Var $ fromInt i, i)  | i <- [0 .. (nvars - 1)] ],
-      grph =          [               (i, []) | i <- [0 .. (nvars - 1)] ]
+      dict = fromList [ (Var $ fromInt i, i) | i <- [0 .. nvars - 1] ],
+      grph = replicate nvars []
     }
-
-  sizeMyState = size . dict
 
   --
   lookupTermM :: Term -> State MyState (Maybe Vertex)
@@ -83,7 +97,7 @@ module Main where
     v = size (dict s)
     in (v, MyState {
         dict = insert t v (dict s),
-        grph = (v,vs):(grph s)
+        grph = vs:(grph s)
       })
 
   --
@@ -99,8 +113,8 @@ module Main where
         _          ->                                                            insertTermM t []
 
   toGraph :: Term -> (Graph,Vertex)
-  toGraph t = (array (0, sizeMyState s - 1) (grph s), v)
-    where (v,s) = runState (toArrayM t) initMyState
+  toGraph t = (listArray (0, length (grph s) - 1) (reverse $ grph s), v) where
+    (v,s) = runState (toArrayM t) initMyState
 
   --
   toTermM :: Graph -> Vertex -> Maybe Term
@@ -119,29 +133,30 @@ module Main where
   toTerm (g,r) = fromJust $ toTermM g r
 
   --
-  prop_toTerm_retract_toGraph_section :: Term -> Bool
-  prop_toTerm_retract_toGraph_section t = t == (toTerm . toGraph) t
+  prop_toTerm_isaRetractOf_toGraph t = t == (toTerm . toGraph) t
+
+  return []
 
   --
   main :: IO ()
   main = getArgs >>= parse >>= mainLoop
 
-  parse ["-t"] = quickCheck (withMaxSuccess 10000 prop_toTerm_retract_toGraph_section) >> exitWith ExitSuccess
+  parse ["-t"] = $forAllProperties (quickCheckWithResult $ stdArgs { maxSuccess = 10000 }) >> exitWith ExitSuccess
   parse [v,e]  = return (read v, read e)
   parse []     = return (8,16)
   parse _      = getProgName >>= usage >> exitWith ExitSuccess
 
   usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t | #vertices #edges]"
 
-  mainLoop (v,e) = do
+  mainLoop (nV,nE) = do
     t <- generate (arbitrary :: Gen Term)
     let
-      (g,_) = toGraph t
-      dV = abs $ v - length (vertices g)
-      dE = abs $ e - length (edges g)
+      (g,v) = toGraph t
+      dV = abs $ nV - length (vertices g)
+      dE = abs $ nE - length (edges g)
       in if dV < 2 && dE < 4
         then do
           putStrLn $ "; " ++ show t
           putStr $ foldr1 (++) [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
         else
-          mainLoop (v,e)
+          mainLoop (nV,nE)
