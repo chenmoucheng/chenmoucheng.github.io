@@ -9,6 +9,7 @@ module Main where
 
   import GHC.TypeNats                  (natVal)
   import Data.Mod.Word                 (Mod,unMod)
+  import Data.Tuple                    (fst,snd,swap)
 
   -- Copied from http://hackage.haskell.org/package/quickcheck-arbitrary-adt-0.3.1.0/docs/Test-QuickCheck-Arbitrary-ADT.html
   import Data.Proxy
@@ -36,6 +37,9 @@ module Main where
   toInt :: Mod NVars -> Int
   toInt = fromInteger . toInteger . unMod
 
+  instance Read (Mod NVars) where
+    readsPrec _ = map (swap . fmap fromInt . swap) . reads
+
   instance Arbitrary (Mod NVars) where
     arbitrary = do
       x <- genericArbitrary
@@ -56,6 +60,29 @@ module Main where
     show (Fun1 t)     = "f(" ++ show t ++ ")"
     show (Fun2 t s)   = "g(" ++ show t ++ "," ++ show s ++ ")"
     show (Fun3 t s r) = "h(" ++ show t ++ "," ++ show s ++ "," ++ show r ++ ")"
+
+  instance Read Term where
+    readsPrec p ('x':s) = [ (Var i, s') | (i,s') <- reads s ]
+    readsPrec p str0    =
+      [ (Fun0,       str1) | ("c", str1) <-         lex str0 ] ++
+      [ (Fun1 t,     str4) | ("f", str1) <-         lex str0,
+                             ("(", str2) <-         lex str1,
+                               (t, str3) <- readsPrec p str2,
+                             (")", str4) <-         lex str3 ] ++
+      [ (Fun2 t s,   str6) | ("g", str1) <-         lex str0,
+                             ("(", str2) <-         lex str1,
+                               (t, str3) <- readsPrec p str2,
+                              (",",str4) <-         lex str3,
+                               (s, str5) <- readsPrec p str4,
+                             (")", str6) <-         lex str5 ] ++
+      [ (Fun3 t s r, str8) | ("h", str1) <-         lex str0,
+                             ("(", str2) <-         lex str1,
+                               (t, str3) <- readsPrec p str2,
+                              (",",str4) <-         lex str3,
+                               (s, str5) <- readsPrec p str4,
+                              (",",str6) <-         lex str5,
+                               (r, str7) <- readsPrec p str6,
+                             (")", str8) <-         lex str7 ]
 
   instance Arbitrary Term where
     arbitrary = genericArbitrary
@@ -78,12 +105,16 @@ module Main where
   instance Arbitrary IsoTermDag where
     arbitrary = do
       t <- arbitrary :: Gen Term
-      let dag = toGraph t
-      let (g,v) = unTermDag dag
-      let (_,m) = bounds g
-      l <- shuffle [nvars .. m]
-      let p = listPermute (m + 1) ([0 .. nvars - 1] ++ l)
-      return $ IsoTermDag { term = t, termDag = dag, iso = p }
+      arbitraryIso $ toTermDag t
+
+  arbitraryIso :: TermDag -> Gen IsoTermDag
+  arbitraryIso dag = do
+    let t = toTerm dag
+    let (g,v) = unTermDag dag
+    let (_,m) = bounds g
+    l <- shuffle [nvars .. m]
+    let p = listPermute (m + 1) ([0 .. nvars - 1] ++ l)
+    return $ IsoTermDag { term = t, termDag = dag, iso = p }
 
   applyIso :: IsoTermDag -> TermDag
   applyIso phi = TermDag (g',v') where
@@ -128,8 +159,8 @@ module Main where
         Fun1 s     -> do { v <- toArrayM s ;                                     insertTermM t [v] }
         _          ->                                                            insertTermM t []
 
-  toGraph :: Term -> TermDag
-  toGraph t = TermDag (g,v) where
+  toTermDag :: Term -> TermDag
+  toTermDag t = TermDag (g,v) where
     (v,s) = runState (toArrayM t) initTGState
     g = listArray (0, length (grph s) - 1) (reverse $ grph s)
 
@@ -150,9 +181,13 @@ module Main where
   toTerm dag = fromJust $ toTermM g v where (g,v) = unTermDag dag
 
   --
-  prop_toTerm_isaRetractOf_toGraph t = label l p where
+  prop_Read_Show_Term t = label l p where
     l = "size = " ++ show (sizeTerm t)
-    p = t == (toTerm . toGraph) t
+    p = t == (read . show) t
+
+  prop_toTerm_isaRetractOf_toTermDag t = label l p where
+    l = "size = " ++ show (sizeTerm t)
+    p = t == (toTerm . toTermDag) t
 
   prop_IsoTermDag phi = label l p where
     l = "size = " ++ show (sizeIsoTermDag phi)
@@ -165,11 +200,14 @@ module Main where
   main = getArgs >>= parse >>= mainLoop
 
   parse ["-t"] = $forAllProperties (quickCheckWithResult $ stdArgs { maxSuccess = 10000 }) >> exitWith ExitSuccess
+  parse [str]  = readTerm str >> exitWith ExitSuccess
   parse [v,e]  = return (read v, read e)
   parse []     = return (8,16)
   parse _      = getProgName >>= usage >> exitWith ExitSuccess
 
-  usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t | #vertices #edges]"
+  readTerm str = do
+    phi <- generate $ arbitraryIso $ toTermDag $ read str
+    putDag $ applyIso phi
 
   mainLoop (nV,nE) = do
     phi <- generate (arbitrary :: Gen IsoTermDag)
@@ -180,6 +218,13 @@ module Main where
     if dV < 2 && dE < 4
       then do
         putStrLn $ "; " ++ show t
-        putStr $ foldr1 (++) [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
+        putDag $ applyIso phi
       else
         mainLoop (nV,nE)
+
+  putDag dag = do
+    let (g,v) = unTermDag dag
+    putStrLn $ "; " ++ show v
+    putStr $ foldr (++) "" [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
+
+  usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t | term | #vertices #edges]"
