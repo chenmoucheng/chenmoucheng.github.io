@@ -48,6 +48,7 @@ extra-deps:
   - streaming-commons-0.1.19@sha256:3a02f84578f75eac1425dca877f8d697b68d379a21970c1dad96196620404803,5262
   - mod-0.1.1.0@sha256:57f230d5664b1c311d1044c259ef880875e4b3bcbfc7c57eab3bf03fce87f445,1838
   - semirings-0.5.3@sha256:4b0d243f88bb07c0673978a37b6b9fd16da44f15e8d552fb08795d9a88a3dc76,3791
+  - permutation-0.5.0.5@sha256:4982a4c9e2f82ec7925a098abca629d0af80e7465e4527d5fe9f4fded4cb2a53,2717
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
