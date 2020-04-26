@@ -19,7 +19,7 @@ module Main where
 
   import Control.Monad.State           (runState,State,state)
   import Data.Map                      (fromList,insert,lookup,Map,size)
-  import Data.Graph                    (edges,Graph,Vertex,vertices)
+  import Data.Graph                    (dff,edges,Graph,Tree(..),Vertex,vertices)
   import Data.Array                    (array,bounds,elems,indices,listArray,(!))
   import Data.Permute                  (at,listPermute,Permute)
   import Data.Maybe                    (fromJust,isNothing)
@@ -105,16 +105,15 @@ module Main where
   instance Arbitrary IsoTermDag where
     arbitrary = do
       t <- arbitrary :: Gen Term
-      arbitraryIso $ toTermDag t
+      arbitraryIso t
 
-  arbitraryIso :: TermDag -> Gen IsoTermDag
-  arbitraryIso dag = do
-    let t = toTerm dag
-    let (g,v) = unTermDag dag
-    let (_,m) = bounds g
+  arbitraryIso :: Term -> Gen IsoTermDag
+  arbitraryIso t = do
+    let tdag = toTermDag t
+    let (_,m) = bounds $ fst $ unTermDag tdag
     l <- shuffle [nvars .. m]
     let p = listPermute (m + 1) ([0 .. nvars - 1] ++ l)
-    return $ IsoTermDag { term = t, termDag = dag, iso = p }
+    return $ IsoTermDag { term = t, termDag = tdag, iso = p }
 
   applyIso :: IsoTermDag -> TermDag
   applyIso phi = TermDag (g',v') where
@@ -178,7 +177,7 @@ module Main where
         _ -> Nothing
 
   toTerm :: TermDag -> Term
-  toTerm dag = fromJust $ toTermM g v where (g,v) = unTermDag dag
+  toTerm tdag = fromJust $ toTermM g v where (g,v) = unTermDag tdag
 
   --
   prop_Read_Show_Term t = label l p where
@@ -193,6 +192,12 @@ module Main where
     l = "size = " ++ show (sizeIsoTermDag phi)
     p = (toTerm $ termDag phi) == (toTerm $ applyIso phi)
 
+  prop_TermDag_dff t = label l p where
+    l = "size = " ++ show (sizeTerm t)
+    p = elem v (map root $ dff g) where
+      (g,v) = unTermDag $ toTermDag t
+      root (Node r _) = r
+
   return []
 
   --
@@ -206,8 +211,8 @@ module Main where
   parse _      = getProgName >>= usage >> exitWith ExitSuccess
 
   readTerm str = do
-    phi <- generate $ arbitraryIso $ toTermDag $ read str
-    putDag $ applyIso phi
+    phi <- generate $ arbitraryIso $ read str
+    putTermDag $ applyIso phi
 
   mainLoop (nV,nE) = do
     phi <- generate (arbitrary :: Gen IsoTermDag)
@@ -218,12 +223,12 @@ module Main where
     if dV < 2 && dE < 4
       then do
         putStrLn $ "; " ++ show t
-        putDag $ applyIso phi
+        putTermDag $ applyIso phi
       else
         mainLoop (nV,nE)
 
-  putDag dag = do
-    let (g,v) = unTermDag dag
+  putTermDag tdag = do
+    let (g,v) = unTermDag tdag
     putStrLn $ "; " ++ show v
     putStr $ foldr (++) "" [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
 
