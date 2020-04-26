@@ -9,9 +9,10 @@ most important definitions and facts that will be useful to us.
 
 **Definition.** A
 [*directed graph*](https://en.wikipedia.org/wiki/Directed_graph) is
-[graph](https://en.wikipedia.org/wiki/Graph_theory#Graph) whose edges
-are [ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair).
-Furthermore, a
+[graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)) G
+= (V,E) whose edges are
+[ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair), i.e.,
+every edge e of G is of the form (s,t) for s,t ∈ V. Furthermore, a
 [*directed acyclic graph (DAG)*](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 is a directed graph without any
 [directed cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)#Directed_circuit,_cycle).
@@ -44,12 +45,12 @@ like the (undirected) graph in the lecture notes. As you can see, the
 edges in a directed graph are usually visualized using arrows, whereas
 in an undirected graph, lines.
 
-**Definition.** A *simple graph* is a graph whose edges are a set,
-whereas a [*multigraph*](https://en.wikipedia.org/wiki/Multigraph) is
-one whose edges are a
-[multiset](https://en.wikipedia.org/wiki/Multiset).
-
-In contrast to the lecture notes, we are mainly interested in
+So far we have been discussing *simple graphs*, which are graphs whose
+edges are sets.  We can generalize the notion to
+[*multigraphs*](https://en.wikipedia.org/wiki/Multigraph), namely,
+graphs whose edges are
+[multisets](https://en.wikipedia.org/wiki/Multiset).  In contrast to
+the lecture notes, we are mainly interested in
 multigraphs. Unfortunately,
 [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) can only
 visualize simple graphs. You can try other (graph) visualization
@@ -84,10 +85,11 @@ the arity of f.
 f(c), g(x0,x0), g(x0,x1), ..., h(x0,x0,x0), h(x0,x0,x1), ...,
 f(f(x0)), ..., g(f(x0),h(x1,x2,f(c))), ...}. You can download and run
 the program
- [`term-graph`](./code/term-graph.exe) in
-[`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); it will generate
-random terms from T (whose term DAGs are of certain sizes). Let us
-take a closer look at the following example output of `term-graph`.
+[`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
+in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
+will output a random term (of appropriate size) from T, along with its
+term DAG. Let us take a closer look at the following example output of
+`term-graph.exe`.
 
 ```
 ; h(g(c,x2),f(x2),f(x0))
@@ -105,22 +107,23 @@ First, let us try to recover the missing vertice labeling in the term
 DAG, which is easy in such a toy example. For example, we observe that
 vertice 6 should be labeled with the function symbol h, as it is the
 only vertice with outdegree 3. Following the same line of reasoning,
-vertice 4 should be labeled with g. Now when it comes to the other two
-outgoing paths 6→3→2 and 6→5→0, we know that both 3 and 5 should be
-labeled with f, but it is unclear whether we should label 2 with x0 or
-x2 (and vice versa for vertice 0). We have a similarly ambiguous
+vertice 4 should be labeled with g. Now, when it comes to the other
+two outgoing paths 6→3→2 and 6→5→0, we know that both 3 and 5 should
+be labeled with f, but it is unclear whether we should label 2 with x0
+or x2 (and vice versa for vertice 0). We have a similarly ambiguous
 situation when we try to label vertices 7 and 2 if we only look at the
-outgoing edges 4→7 and 4→2. In this example, fortunately, we have an
-additional piece of information that the subgraphs { 4→7, 4→2 } and {
-3→2 } share a common vertice 2, which must correspond to the fact that
-the subterms `g(c,x2)` and `f(x2)` also share a common subterm `x2`.
-We can thus complete labeling all the vertices as follows.
+outgoing edges 4→7 and 4→2 from their common source vertice. In this
+example, fortunately, we have an additional piece of information that
+the subgraphs { 4→7, 4→2 } and { 3→2 } share a common vertice 2, which
+must correspond to the fact that the subterms `g(c,x2)` and `f(x2)`
+also share a common subterm `x2`.  We can thus complete labeling all
+the vertices as follows.
 
 Vertice|0|2|3|4|5|6|7
 :---|---:|---:|---:|---:|---:|---:|---:
 Symbol|`x0`|`x2`|`f`|`g`|`f`|`h`|`c`
 
-We can also visualize this 7-vertice term DAG using
+We can now visualize this 7-vertice term DAG, again using
 [http://arborjs.org/halfviz](http://arborjs.org/halfviz/):
 
 ```
@@ -133,11 +136,11 @@ We can also visualize this 7-vertice term DAG using
 6"h" -> 5"f"
 ```
 
-We conclude this (rather lengthy) example by two more observations.
-First, we note that term DAGs are by no means unique; sometimes a term
-can have more than one term DAG. For example, you can verify that the
-following term DAG *with 8 vertices* corresponds to the same term
-`h(g(c,x2),f(x2),f(x0))`:
+We conclude this (rather lengthy) example by two important
+observations.  First, we note that term DAGs are by no means unique;
+sometimes a term can have two or more term DAGs. For example, you can
+verify that the following term DAG *with 8 vertices* also corresponds
+to the same term `h(g(c,x2),f(x2),f(x0))`:
 
 ```
 3"f" -> 1"x2"
@@ -150,9 +153,9 @@ following term DAG *with 8 vertices* corresponds to the same term
 ```
 
 Last but not least, the ambiguity can be eliminated altogether if the
-outgoing edges of any vertice are indeed *ordered*, as the definition
-of term DAGs prescribes. However, this means that the (outgoing) edges
-would be a *list*, rather than a multiset.
+outgoing edges from any vertice are indeed *ordered*, as the
+definition of term DAGs prescribes. However, this means that the
+(outgoing) edges would be a *list*, rather than a multiset.
 
 # Graph representations
 
@@ -201,3 +204,45 @@ for the same term DAG:
 (6,[4,3,5])
 (7,[])
 ```
+
+**Definition.** A
+  [*graph homomorphism*](https://en.wikipedia.org/wiki/Graph_homomorphism#Definitions)
+  φ from a graph G = (V,E) to G' = (V',E') is a function from V to V'
+  that *preserves* the graph structure of G; that is, for any edge e =
+  (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a graph
+  homomorphism is a
+  [*graph isomorphism*](https://en.wikipedia.org/wiki/Graph_isomorphism)
+  when its underlying vertice function is bijective.
+
+Given a term, the `term-graph.exe` program can also generate a random,
+isomorphic term DAG:
+
+```
+C:¥> term-graph
+; h(g(c,x2),f(x2),f(x0))
+; 6
+3 -> 2
+4 -> 7
+4 -> 2
+5 -> 0
+6 -> 4
+6 -> 3
+6 -> 5
+C:¥> term-graph 'h(g(c,x2),f(x2),f(x0))'
+; 4
+4 -> 7
+4 -> 6
+4 -> 5
+5 -> 0
+6 -> 2
+7 -> 3
+7 -> 2
+```
+
+It is easy to verify that these two graphs are isomorphic by the
+following φ:
+
+v|0|2|3|4|5|6|7
+---:|---:|---:|---:|---:|---:|---:|---:
+φ(v)|0|2|6|7|5|4|3
+
