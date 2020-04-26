@@ -30,7 +30,7 @@ set of questions posed in the handout.
 
      - Overview of this set of experiments
 
-     - Review of graph theory and graph representations
+     - [Review of graph theory and graph representations](./graph-theory-representations.md)
 
   2. Basic data structures
 

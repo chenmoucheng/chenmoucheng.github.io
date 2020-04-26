@@ -17,12 +17,14 @@ module Main where
   import Test.QuickCheck
   import Test.QuickCheck.Arbitrary.ADT
 
-  import Control.Monad.State           (runState,State,state)
-  import Data.Map                      (fromList,insert,lookup,Map,size)
   import Data.Graph                    (dff,edges,Graph,Tree(..),Vertex,vertices)
   import Data.Array                    (array,bounds,elems,indices,listArray,(!))
   import Data.Permute                  (at,listPermute,Permute)
+
+  import Data.Map                      (fromList,insert,lookup,Map,size)
+  import Control.Monad.State           (runState,State,state)
   import Data.Maybe                    (fromJust,isNothing)
+
   import System.Environment            (getArgs,getProgName)
   import System.Exit                   (ExitCode(..),exitWith)
 
@@ -53,6 +55,17 @@ module Main where
     | Fun2 Term Term
     | Fun3 Term Term Term
     deriving (Eq,Generic,Ord)
+
+  prop_Read_Show_Term t = label l p where
+    l = "size = " ++ show (sizeTerm t)
+    p = t == (read . show) t
+
+  sizeTerm :: Term -> Int
+  sizeTerm (Var _)      = 1
+  sizeTerm  Fun0        = 1
+  sizeTerm (Fun1 t)     = 1 + sizeTerm t
+  sizeTerm (Fun2 t s)   = 1 + sizeTerm t + sizeTerm s
+  sizeTerm (Fun3 t s r) = 1 + sizeTerm t + sizeTerm s + sizeTerm r
 
   instance Show Term where
     show (Var i)      = "x" ++ show (unMod i)
@@ -89,23 +102,22 @@ module Main where
 
   instance ToADTArbitrary Term
 
-  sizeTerm :: Term -> Int
-  sizeTerm (Var _)      = 1
-  sizeTerm  Fun0        = 1
-  sizeTerm (Fun1 t)     = 1 + sizeTerm t
-  sizeTerm (Fun2 t s)   = 1 + sizeTerm t + sizeTerm s
-  sizeTerm (Fun3 t s r) = 1 + sizeTerm t + sizeTerm s + sizeTerm r
-
   --
   newtype TermDag = TermDag { unTermDag :: (Graph,Vertex) } deriving (Show)
+
+  prop_TermDag_dff t = label l p where
+    l = "size = " ++ show (sizeTerm t)
+    p = elem v (map root $ dff g) where
+      (g,v) = unTermDag $ toTermDag t
+      root (Node r _) = r
+
   data IsoTermDag = IsoTermDag { term :: Term, termDag :: TermDag, iso :: Permute } deriving (Show)
 
-  sizeIsoTermDag = (+) 1 . snd . bounds . fst . unTermDag . termDag
+  prop_IsoTermDag phi = label l p where
+    l = "size = " ++ show (sizeIsoTermDag phi)
+    p = (toTerm $ termDag phi) == (toTerm $ applyIso phi)
 
-  instance Arbitrary IsoTermDag where
-    arbitrary = do
-      t <- arbitrary :: Gen Term
-      arbitraryIso t
+  sizeIsoTermDag = (+) 1 . snd . bounds . fst . unTermDag . termDag
 
   arbitraryIso :: Term -> Gen IsoTermDag
   arbitraryIso t = do
@@ -123,6 +135,11 @@ module Main where
     elm = map (map f) (elems g)
     g' = array (bounds g) (zip idx elm)
     v' = f v
+
+  instance Arbitrary IsoTermDag where
+    arbitrary = do
+      t <- arbitrary :: Gen Term
+      arbitraryIso t
 
   --
   data TGState = TGState {
@@ -177,33 +194,19 @@ module Main where
         _ -> Nothing
 
   toTerm :: TermDag -> Term
-  toTerm tdag = fromJust $ toTermM g v where (g,v) = unTermDag tdag
-
-  --
-  prop_Read_Show_Term t = label l p where
-    l = "size = " ++ show (sizeTerm t)
-    p = t == (read . show) t
+  toTerm = fromJust . uncurry toTermM . unTermDag 
 
   prop_toTerm_isaRetractOf_toTermDag t = label l p where
     l = "size = " ++ show (sizeTerm t)
     p = t == (toTerm . toTermDag) t
 
-  prop_IsoTermDag phi = label l p where
-    l = "size = " ++ show (sizeIsoTermDag phi)
-    p = (toTerm $ termDag phi) == (toTerm $ applyIso phi)
-
-  prop_TermDag_dff t = label l p where
-    l = "size = " ++ show (sizeTerm t)
-    p = elem v (map root $ dff g) where
-      (g,v) = unTermDag $ toTermDag t
-      root (Node r _) = r
-
+  --
   return []
 
-  --
   main :: IO ()
   main = getArgs >>= parse >>= mainLoop
 
+  parse ["-h"] = getProgName >>= usage >> exitWith ExitSuccess
   parse ["-t"] = $forAllProperties (quickCheckWithResult $ stdArgs { maxSuccess = 10000 }) >> exitWith ExitSuccess
   parse [str]  = readTerm str >> exitWith ExitSuccess
   parse [v,e]  = return (read v, read e)
