@@ -1,4 +1,6 @@
-# Graph theory
+# [Review of graph theory and graph representations](https://chenmoucheng.github.io/43041/graph-theory-representations.html)
+
+## Graph theory
 
 The main reference here is Chapter 6 and 7 of the lecture notes on
 『
@@ -157,12 +159,12 @@ outgoing edges from any vertice are indeed *ordered*, as the
 definition of term DAGs prescribes. However, this means that the
 (outgoing) edges would be a *list*, rather than a multiset.
 
-# Graph representations
+## Graph representations
 
 Three representations of graphs are introduced in the lecture notes,
-namely,* adjacency matrix*, *incidence matrix*, and *adjacency list*.
+namely, *adjacency matrix*, *incidence matrix*, and *adjacency list*.
 
-**Example.** An adjacency matrix for the last term DAG can be:
+**Example.** An adjacency matrix for the last term DAG is:
 
 ```
 0 0 0 0 0 0 0 0
@@ -176,8 +178,7 @@ namely,* adjacency matrix*, *incidence matrix*, and *adjacency list*.
 ```
 
 If we forget about the directions of the edges, then an incidence
-matrix for the same term DAG (when viewed as an undirected graph) can
-be:
+matrix for the same term DAG (when viewed as an undirected graph) is:
 
 ```
 0 0 0 1 0 0 0
@@ -246,3 +247,24 @@ v|0|2|3|4|5|6|7
 ---:|---:|---:|---:|---:|---:|---:|---:
 φ(v)|0|2|6|7|5|4|3
 
+Now we apply φ to every vertice in the adjacency-list representation
+of the term DAG in our running example and arrive at:
+
+```
+(0,[])
+(2,[])
+(3,[])
+(4,[7,6,5])
+(5,[0])
+(6,[2])
+(7,[3,2])
+```
+
+**Exercise.** The `term-graph.exe` program can also take two integers
+  `v` and `e` as its parameters: `term-graph v e` will try to generate
+  a random term whose term DAG roughly has `v` vertices and `e`
+  edges. Run it a few times, generate a pair of larger, isomorphic
+  term DAGs, and compute the isomorphism between them. Visualize both
+  term DAGs using
+  [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and
+  convince yourself that isomorphic graphs are indeed "the same".
