@@ -78,8 +78,8 @@ T is recursively defined to be the smallest set such that:
 
 **Definition.** A *term DAG* is a directed acyclic multigraph whose
 vertices are labeled with variable, constant, or function symbols,
-whose outgoing edges from any vertice are *ordered*, and where the
-outdegree of any vertice labeled with a function symbol f is equal to
+whose outgoing edges from any vertex are *ordered*, and where the
+outdegree of any vertex labeled with a function symbol f is equal to
 the arity of f.
 
 **Example.** Let V = {x0,x1,x2}, C = {c}, F1 = {f}, F2 = {g}, F3 =
@@ -105,27 +105,27 @@ term DAG. Let us take a closer look at the following example output of
 6 -> 5
 ```
 
-First, let us try to recover the missing vertice labeling in the term
+First, let us try to recover the missing vertex labeling in the term
 DAG, which is easy in such a toy example. For example, we observe that
-vertice 6 should be labeled with the function symbol h, as it is the
-only vertice with outdegree 3. Following the same line of reasoning,
-vertice 4 should be labeled with g. Now, when it comes to the other
+vertex 6 should be labeled with the function symbol h, as it is the
+only vertex with outdegree 3. Following the same line of reasoning,
+vertex 4 should be labeled with g. Now, when it comes to the other
 two outgoing paths 6→3→2 and 6→5→0, we know that both 3 and 5 should
 be labeled with f, but it is unclear whether we should label 2 with x0
-or x2 (and vice versa for vertice 0). We have a similarly ambiguous
+or x2 (and vice versa for vertex 0). We have a similarly ambiguous
 situation when we try to label vertices 7 and 2 if we only look at the
-outgoing edges 4→7 and 4→2 from their common source vertice. In this
+outgoing edges 4→7 and 4→2 from their common source vertex. In this
 example, fortunately, we have an additional piece of information that
-the subgraphs { 4→7, 4→2 } and { 3→2 } share a common vertice 2, which
+the subgraphs { 4→7, 4→2 } and { 3→2 } share a common vertex 2, which
 must correspond to the fact that the subterms `g(c,x2)` and `f(x2)`
 also share a common subterm `x2`.  We can thus complete labeling all
 the vertices as follows.
 
-Vertice|0|2|3|4|5|6|7
+Vertex|0|2|3|4|5|6|7
 :---|---:|---:|---:|---:|---:|---:|---:
 Symbol|`x0`|`x2`|`f`|`g`|`f`|`h`|`c`
 
-We can now visualize this 7-vertice term DAG, again using
+We can now visualize this 7-vertex term DAG, again using
 [http://arborjs.org/halfviz](http://arborjs.org/halfviz/):
 
 ```
@@ -155,7 +155,7 @@ to the same term `h(g(c,x2),f(x2),f(x0))`:
 ```
 
 Last but not least, the ambiguity can be eliminated altogether if the
-outgoing edges from any vertice are indeed *ordered*, as the
+outgoing edges from any vertex are indeed *ordered*, as the
 definition of term DAGs prescribes. However, this means that the
 (outgoing) edges would be a *list*, rather than a multiset.
 
@@ -213,7 +213,7 @@ for the same term DAG:
   (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a graph
   homomorphism is a
   [*graph isomorphism*](https://en.wikipedia.org/wiki/Graph_isomorphism)
-  when its underlying vertice function is bijective.
+  when its underlying vertex function is bijective.
 
 Given a term, the `term-graph.exe` program can also generate a random,
 isomorphic term DAG:
@@ -247,7 +247,7 @@ v|0|2|3|4|5|6|7
 ---:|---:|---:|---:|---:|---:|---:|---:
 φ(v)|0|2|6|7|5|4|3
 
-Now we apply φ to every vertice in the adjacency-list representation
+Now we apply φ to every vertex in the adjacency-list representation
 of the term DAG in our running example and arrive at:
 
 ```

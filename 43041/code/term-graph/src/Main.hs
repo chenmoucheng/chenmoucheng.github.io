@@ -12,21 +12,27 @@ module Main where
   import Data.Tuple                    (fst,snd,swap)
 
   -- Copied from http://hackage.haskell.org/package/quickcheck-arbitrary-adt-0.3.1.0/docs/Test-QuickCheck-Arbitrary-ADT.html
-  import Data.Proxy
-  import GHC.Generics
-  import Test.QuickCheck
-  import Test.QuickCheck.Arbitrary.ADT
+  import Data.Proxy                    (Proxy(..))
+  import GHC.Generics                  (Generic)
+  import Test.QuickCheck as QC         (Arbitrary(..),forAllProperties,Gen,generate,label,maxSuccess,quickCheckWithResult,shuffle,stdArgs)
+  import Test.QuickCheck.Arbitrary.ADT (genericArbitrary,ToADTArbitrary)
+
+  import Control.Monad                 (liftM)
 
   import Data.Graph                    (dff,edges,Graph,Tree(..),Vertex,vertices)
-  import Data.Array                    (array,bounds,elems,indices,listArray,(!))
+  import Data.Array as Array           (array,bounds,elems,indices,listArray,(!))
   import Data.Permute                  (at,listPermute,Permute)
 
   import Data.Map                      (fromList,insert,lookup,Map,size)
   import Control.Monad.State           (runState,State,state)
-  import Data.Maybe                    (fromJust,isNothing)
+  import Data.Maybe                    (fromJust,fromMaybe,isNothing)
 
   import System.Environment            (getArgs,getProgName)
   import System.Exit                   (ExitCode(..),exitWith)
+
+  import Network.FastCGI               (CGI,CGIResult,getInput,handleErrors,liftIO,output,runFastCGI)
+  import Text.XHtml as HTML     hiding (size)
+  import Text.Read                     (readMaybe)
 
   --
   type NVars = 3
@@ -43,9 +49,7 @@ module Main where
     readsPrec _ = map (swap . fmap fromInt . swap) . reads
 
   instance Arbitrary (Mod NVars) where
-    arbitrary = do
-      x <- genericArbitrary
-      return $ fromInteger $ toInteger $ unMod x
+    arbitrary = liftM (fromInteger . toInteger . unMod) genericArbitrary
 
   --
   data Term
@@ -56,7 +60,7 @@ module Main where
     | Fun3 Term Term Term
     deriving (Eq,Generic,Ord)
 
-  prop_Read_Show_Term t = label l p where
+  prop_Read_Show_Term t = QC.label l p where
     l = "size = " ++ show (sizeTerm t)
     p = t == (read . show) t
 
@@ -75,8 +79,9 @@ module Main where
     show (Fun3 t s r) = "h(" ++ show t ++ "," ++ show s ++ "," ++ show r ++ ")"
 
   instance Read Term where
-    readsPrec p ('x':s) = [ (Var i, s') | (i,s') <- reads s ]
     readsPrec p str0    =
+      [ (Var i, str2) | ('x':str1, str2) <-         lex str0,
+                               (i,   "") <-       reads str1 ] ++
       [ (Fun0,       str1) | ("c", str1) <-         lex str0 ] ++
       [ (Fun1 t,     str4) | ("f", str1) <-         lex str0,
                              ("(", str2) <-         lex str1,
@@ -85,15 +90,15 @@ module Main where
       [ (Fun2 t s,   str6) | ("g", str1) <-         lex str0,
                              ("(", str2) <-         lex str1,
                                (t, str3) <- readsPrec p str2,
-                              (",",str4) <-         lex str3,
+                             (",", str4) <-         lex str3,
                                (s, str5) <- readsPrec p str4,
                              (")", str6) <-         lex str5 ] ++
       [ (Fun3 t s r, str8) | ("h", str1) <-         lex str0,
                              ("(", str2) <-         lex str1,
                                (t, str3) <- readsPrec p str2,
-                              (",",str4) <-         lex str3,
+                             (",", str4) <-         lex str3,
                                (s, str5) <- readsPrec p str4,
-                              (",",str6) <-         lex str5,
+                             (",", str6) <-         lex str5,
                                (r, str7) <- readsPrec p str6,
                              (")", str8) <-         lex str7 ]
 
@@ -103,19 +108,38 @@ module Main where
   instance ToADTArbitrary Term
 
   --
-  newtype TermDag = TermDag { unTermDag :: (Graph,Vertex) } deriving (Show)
+  newtype TermDag = TermDag { unTermDag :: (Graph,Vertex) }
 
-  prop_TermDag_dff t = label l p where
+  prop_TermDag_dff t = QC.label l p where
     l = "size = " ++ show (sizeTerm t)
     p = elem v (map root $ dff g) where
       (g,v) = unTermDag $ toTermDag t
       root (Node r _) = r
 
-  data IsoTermDag = IsoTermDag { term :: Term, termDag :: TermDag, iso :: Permute } deriving (Show)
+  instance Show TermDag where
+    show tdag = v' ++ es where
+      (g,v) = unTermDag tdag
+      v' = "; " ++ show v ++ "\n"
+      es = foldr (++) "" [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
 
-  prop_IsoTermDag phi = label l p where
+  --
+  -- phi :: IsoTermDag and f = iso phi: representing a pair of
+  -- isomorphic term dags s.t. f (termDag phi) = termDag' phi
+  --
+  data IsoTermDag = IsoTermDag { term :: Term, termDag :: TermDag, iso :: Permute }
+
+  termDag' :: IsoTermDag -> TermDag
+  termDag' phi = TermDag (g',v') where
+    (g,v) = unTermDag $ termDag phi
+    f = at $ iso phi
+    idx = map f (indices g)
+    elm = map (map f) (elems g)
+    g' = array (bounds g) (zip idx elm)
+    v' = f v
+
+  prop_IsoTermDag phi = QC.label l p where
     l = "size = " ++ show (sizeIsoTermDag phi)
-    p = (toTerm $ termDag phi) == (toTerm $ applyIso phi)
+    p = (toTerm $ termDag phi) == (toTerm $ termDag' phi)
 
   sizeIsoTermDag = (+) 1 . snd . bounds . fst . unTermDag . termDag
 
@@ -127,25 +151,27 @@ module Main where
     let p = listPermute (m + 1) ([0 .. nvars - 1] ++ l)
     return $ IsoTermDag { term = t, termDag = tdag, iso = p }
 
-  applyIso :: IsoTermDag -> TermDag
-  applyIso phi = TermDag (g',v') where
-    (g,v) = unTermDag $ termDag phi
-    f = at $ iso phi
-    idx = map f (indices g)
-    elm = map (map f) (elems g)
-    g' = array (bounds g) (zip idx elm)
-    v' = f v
+  generateIsoOfSize :: (Int,Int) -> Int -> IO IsoTermDag
+  generateIsoOfSize (nV,nE) cnt = do
+    phi <- generate (arbitrary :: Gen IsoTermDag)
+    let (g,v) = unTermDag $ termDag phi
+    let dV = abs $ nV - length (vertices g)
+    let dE = abs $ nE - length (edges g)
+    if (cnt < 1) || (dV < 2 && dE < 4)
+      then return phi
+      else generateIsoOfSize (nV,nE) (cnt - 1)
+
+  instance Show IsoTermDag where
+    show phi = "; " ++ (show $ term phi) ++ "\n" ++ (show $ termDag' phi)
 
   instance Arbitrary IsoTermDag where
-    arbitrary = do
-      t <- arbitrary :: Gen Term
-      arbitraryIso t
+    arbitrary = arbitrary >>= arbitraryIso
 
   --
   data TGState = TGState {
       dict :: Map Term Vertex,
       grph :: [[Vertex]]
-    } deriving (Show)
+    }
 
   initTGState :: TGState
   initTGState = TGState {
@@ -183,7 +209,7 @@ module Main where
   --
   toTermM :: Graph -> Vertex -> Maybe Term
   toTermM g v = let
-    ms = map (toTermM g) (g ! v)
+    ms = map (toTermM g) (g Array.! v)
     in if any isNothing ms then Nothing else let
       ts = map fromJust ms
       in case (length ts) of
@@ -196,7 +222,7 @@ module Main where
   toTerm :: TermDag -> Term
   toTerm = fromJust . uncurry toTermM . unTermDag 
 
-  prop_toTerm_isaRetractOf_toTermDag t = label l p where
+  prop_toTerm_isaRetractOf_toTermDag t = QC.label l p where
     l = "size = " ++ show (sizeTerm t)
     p = t == (toTerm . toTermDag) t
 
@@ -204,35 +230,31 @@ module Main where
   return []
 
   main :: IO ()
-  main = getArgs >>= parse >>= mainLoop
+  main = getArgs >>= parse >> (runFastCGI $ handleErrors cgiMain)
 
-  parse ["-h"] = getProgName >>= usage >> exitWith ExitSuccess
+  parse []     = return ()
   parse ["-t"] = $forAllProperties (quickCheckWithResult $ stdArgs { maxSuccess = 10000 }) >> exitWith ExitSuccess
-  parse [str]  = readTerm str >> exitWith ExitSuccess
-  parse [v,e]  = return (read v, read e)
-  parse []     = return (8,16)
   parse _      = getProgName >>= usage >> exitWith ExitSuccess
 
-  readTerm str = do
-    phi <- generate $ arbitraryIso $ read str
-    putTermDag $ applyIso phi
+  usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t]"
 
-  mainLoop (nV,nE) = do
-    phi <- generate (arbitrary :: Gen IsoTermDag)
-    let t = term phi
-    let (g,v) = unTermDag $ termDag phi
-    let dV = abs $ nV - length (vertices g)
-    let dE = abs $ nE - length (edges g)
-    if dV < 2 && dE < 4
-      then do
-        putStrLn $ "; " ++ show t
-        putTermDag $ applyIso phi
-      else
-        mainLoop (nV,nE)
-
-  putTermDag tdag = do
-    let (g,v) = unTermDag tdag
-    putStrLn $ "; " ++ show v
-    putStr $ foldr (++) "" [ show i ++ " -> " ++ show j ++ "\n" | (i,j) <- edges g ]
-
-  usage progName = putStrLn $ "Usage: " ++ progName ++ " [-t | term | #vertices #edges]"
+  cgiMain :: CGI CGIResult
+  cgiMain = do
+    v <- liftM (fromMaybe  8 . (>>=readMaybe)) $ getInput "v"
+    e <- liftM (fromMaybe 16 . (>>=readMaybe)) $ getInput "e"
+    t <- liftM                 (>>=readMaybe)  $ getInput "t"
+    phi <- liftIO $ case t of
+      Just t' -> generate $ arbitraryIso t'
+      Nothing -> generateIsoOfSize (v,e) 100000
+    output $ renderHtml $
+      header << thetitle << "Generate a random term graph" +++
+      body << concatHtml [
+        h1 << "Term:",  (textarea << show (term phi)) HTML.! [intAttr "rows"  4, intAttr "cols" 80, strAttr "name" "t", strAttr "form" "term-form"],
+        h1 << "Graph:", (textarea << show       phi)  HTML.! [intAttr "rows" 40, intAttr "cols" 80],
+        p << (form << [submit "" "Generate an isomorphic graph", hidden "v" (show v), hidden "e" (show e)]) HTML.! [strAttr "id" "term-form"], hr,
+        form << [
+            p << ((HTML.label << "Number of vertices: ") HTML.! [strAttr "for" "v"] +++ widget "number" "v" [intAttr "min" 1, intAttr "max" 99, intAttr "value" v]),
+            p << ((HTML.label << "Number of edges: ")    HTML.! [strAttr "for" "e"] +++ widget "number" "e" [intAttr "min" 1, intAttr "max" 99, intAttr "value" e]),
+            p << submit "" "Generate a new term graph"
+          ]
+      ]
