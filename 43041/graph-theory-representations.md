@@ -90,7 +90,10 @@ the program
 [`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
 in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
 will output a random term (of appropriate size) from T, along with its
-term DAG. Let us take a closer look at the following example output of
+term DAG. **Update.** Now you can also access the program via its
+[web interface](https://term-graph-iedy2lhg3a-an.a.run.app/).
+
+Let us take a closer look at the following example output of
 `term-graph.exe`.
 
 ```
