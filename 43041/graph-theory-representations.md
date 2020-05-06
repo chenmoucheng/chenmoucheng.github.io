@@ -10,11 +10,53 @@ The main reference here is Chapter 6 and 7 of the lecture notes on
 most important definitions and facts that will be useful to us.
 
 **Definition.** A
-[*directed graph*](https://en.wikipedia.org/wiki/Directed_graph) is
+  [*set*](https://en.wikipedia.org/wiki/Set_(mathematics)) is a
+  collection of distinct *elements*. We write *x ∈ X* if x is an
+  element of the set X.
+
+**Definition.** A
+  [*function*](https://en.wikipedia.org/wiki/Function_(mathematics)) f
+  from its *domain* X to its *codomain* Y associates exactly one
+  element f(x) ∈ Y to each and every element x ∈ X. A function f from
+  set X to set Y is often denoted as *f: X→Y*.
+
+**Definition.** Given functions f: X→Y and g: Y→Z, the
+  [*composition*](https://en.wikipedia.org/wiki/Function_composition)
+  of f and g is a function g ⚬ f: X→Z defined by (g ⚬ f)(x) = g(f(x))
+  for all x ∈ X.
+
+**Definition.** For a set X, there is a unique
+[*identity function*](https://en.wikipedia.org/wiki/Identity_function)
+1: X→X on X that sends every x ∈ X to itself.
+
+**Definition.** A function f: X→Y is
+  [*surjective*](https://en.wikipedia.org/wiki/Surjective_function) if
+  for every y ∈ Y, there is at least one x ∈ X such that y = f(x). It
+  is [*injective*](https://en.wikipedia.org/wiki/Injective_function)
+  if f(x) = f(x') implies that x = x', or equivalently, x ≠ x' implies
+  f(x) ≠ f(x').
+
+**Definition.** A function f: X→Y is
+  [*bijective*](https://en.wikipedia.org/wiki/Bijection) if it is both
+  surjective and injective, in which case it has an
+  [*inverse*](https://en.wikipedia.org/wiki/Inverse_function) g: Y→X
+  such that g ⚬ f = 1 and f ⚬ g = 1.
+
+**Definition.** A
 [graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)) G
-= (V,E) whose edges are
-[ordered pairs](https://en.wikipedia.org/wiki/Ordered_pair), i.e.,
-every edge e of G is of the form (s,t) for s,t ∈ V. Furthermore, a
+is an [unordered pair](https://en.wikipedia.org/wiki/Unordered_pair)
+(V,E) of sets, where each v ∈ V is a *vertex* of G, and each e ∈ E, an
+*edge* of G, which connects two (not necessarily distinct) vertices
+u,v ∈ V.
+
+**Definition.** A
+[*directed graph*](https://en.wikipedia.org/wiki/Directed_graph) is
+graph G = (V,E) such that each edge e ∈ E is an
+[ordered pair](https://en.wikipedia.org/wiki/Ordered_pair) (u,v) for
+some u,v ∈ V, i.e., there are functions s,t: E→V such that for each
+edge (u,v) ∈ E, s(u,v) = u and t(u,v) = v.
+
+**Definition.** A
 [*directed acyclic graph (DAG)*](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 is a directed graph without any
 [directed cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)#Directed_circuit,_cycle).
@@ -48,16 +90,21 @@ edges in a directed graph are usually visualized using arrows, whereas
 in an undirected graph, lines.
 
 So far we have been discussing *simple graphs*, which are graphs whose
-edges are sets.  We can generalize the notion to
+edges are sets: G = (V,E) is a simple graph if the function (s,t):
+E→V×V is injective.  We can generalize the notion to
 [*multigraphs*](https://en.wikipedia.org/wiki/Multigraph), namely,
 graphs whose edges are
-[multisets](https://en.wikipedia.org/wiki/Multiset).  In contrast to
-the lecture notes, we are mainly interested in
+[multisets](https://en.wikipedia.org/wiki/Multiset), for which the
+function (s,t): E→V×V is no longer required to be injective, so there
+can be two edges e ≠ e' but (s(e),t(e)) = (s(e'),t(e')). In contrast
+to the lecture notes, we are mainly interested in
 multigraphs. Unfortunately,
 [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) can only
 visualize simple graphs. You can try other (graph) visualization
 tools, such as [Cytoscape.js](https://js.cytoscape.org/), to see if
 you can visualize multigraphs.
+
+## Terms and term DAGs
 
 Graphs have numerous applications. In this experiment, we shall
 explore a particular application of DAGs to
@@ -90,7 +137,7 @@ the program
 [`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
 in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
 will output a random term (of appropriate size) from T, along with its
-term DAG. **Update.** Now you can also access the program via its
+term DAG. **Update:** Now you can also access the program via its
 [web interface](https://term-graph-iedy2lhg3a-an.a.run.app/).
 
 Let us take a closer look at the following example output of
@@ -216,7 +263,8 @@ for the same term DAG:
   (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a graph
   homomorphism is a
   [*graph isomorphism*](https://en.wikipedia.org/wiki/Graph_isomorphism)
-  when its underlying vertex function is bijective.
+  when it is bijective as a function between the vertices of the two
+  graph, in which case the two graphs are *isomorphic* to each other.
 
 Given a term, the `term-graph.exe` program can also generate a random,
 isomorphic term DAG:
@@ -244,14 +292,15 @@ C:¥> term-graph 'h(g(c,x2),f(x2),f(x0))'
 ```
 
 It is easy to verify that these two graphs are isomorphic by the
-following φ:
+following vertex function φ:
 
 v|0|2|3|4|5|6|7
 ---:|---:|---:|---:|---:|---:|---:|---:
 φ(v)|0|2|6|7|5|4|3
 
-Now we apply φ to every vertex in the adjacency-list representation
-of the term DAG in our running example and arrive at:
+Now we can apply φ to every vertex in the adjacency-list
+representation of the term DAG in our running example and arrive at
+the representation of the other, isomorphic term DAG:
 
 ```
 (0,[])
