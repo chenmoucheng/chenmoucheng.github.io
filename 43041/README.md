@@ -34,7 +34,7 @@ set of questions posed in the handout.
 
   2. Basic data structures
 
-     - Basic data structures for handling graphs
+     - [Basic data structures for handling graphs](./basic-data-structures.md)
 
      - 質疑応答
 

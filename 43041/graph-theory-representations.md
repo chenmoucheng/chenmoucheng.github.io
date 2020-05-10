@@ -1,4 +1,4 @@
-# [Review of graph theory and graph representations](https://chenmoucheng.github.io/43041/graph-theory-representations.html)
+# Review of graph theory and graph representations
 
 ## Graph theory
 
@@ -46,8 +46,8 @@ most important definitions and facts that will be useful to us.
 [graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)) G
 is an [unordered pair](https://en.wikipedia.org/wiki/Unordered_pair)
 (V,E) of sets, where each v ∈ V is a *vertex* of G, and each e ∈ E, an
-*edge* of G, which connects two (not necessarily distinct) vertices
-u,v ∈ V.
+*edge* of G. An edge *connects* two (not necessarily distinct)
+vertices.
 
 **Definition.** A
 [*directed graph*](https://en.wikipedia.org/wiki/Directed_graph) is
@@ -56,10 +56,9 @@ graph G = (V,E) such that each edge e ∈ E is an
 some u,v ∈ V, i.e., there are functions s,t: E→V such that for each
 edge (u,v) ∈ E, s(u,v) = u and t(u,v) = v.
 
-**Definition.** A
-[*directed acyclic graph (DAG)*](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
-is a directed graph without any
-[directed cycles](https://en.wikipedia.org/wiki/Cycle_(graph_theory)#Directed_circuit,_cycle).
+In other words, we tend to think of an edge e ∈ E of a directed graph
+G = (V,E) as an arrow, pointing from its *source* s(e) to its *target*
+t(e).
 
 **Example** (from the lecture notes). Let G = (V,E) for V =
 {a,b,c,d,e,f,g,h} and E = {(a,b), (a,c), (a,d), (b,d), (c,d), (d,e),
@@ -90,19 +89,47 @@ edges in a directed graph are usually visualized using arrows, whereas
 in an undirected graph, lines.
 
 So far we have been discussing *simple graphs*, which are graphs whose
-edges are sets: G = (V,E) is a simple graph if the function (s,t):
-E→V×V is injective.  We can generalize the notion to
-[*multigraphs*](https://en.wikipedia.org/wiki/Multigraph), namely,
-graphs whose edges are
-[multisets](https://en.wikipedia.org/wiki/Multiset), for which the
-function (s,t): E→V×V is no longer required to be injective, so there
-can be two edges e ≠ e' but (s(e),t(e)) = (s(e'),t(e')). In contrast
-to the lecture notes, we are mainly interested in
+edges are sets; alternatively, G = (V,E) is a simple directed graph if
+the function (s,t): E → V×V is injective.  We can generalize the
+notion to [*multigraphs*](https://en.wikipedia.org/wiki/Multigraph),
+namely, graphs whose edges are
+[multisets](https://en.wikipedia.org/wiki/Multiset). For directed
+graphs, the function (s,t): E → V×V is no longer required to be
+injective, so there can be two edges e ≠ e' but (s(e),t(e)) =
+(s(e'),t(e')). In other words, the equality of edges of multigraphs is
+not predicated on the equality of their sources and targets, but
+rather on some other identities.
+
+In contrast to the lecture notes, we are mainly interested in
 multigraphs. Unfortunately,
 [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) can only
 visualize simple graphs. You can try other (graph) visualization
 tools, such as [Cytoscape.js](https://js.cytoscape.org/), to see if
 you can visualize multigraphs.
+
+**Definition.** A
+  [*topological sort*](https://en.wikipedia.org/wiki/Topological_sorting)
+  of a directed graph G = (V,E) is a
+  [*linear ordering*](https://en.wikipedia.org/wiki/Total_order) on V
+  such that if there is an edge e ∈ E with s(e) = u and t(e) = v, then
+  u ≤ v in the ordering.
+
+**Definition.** A
+[*directed acyclic graph (DAG)*](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
+is a directed graph that has a topological sort.
+
+**Remark.** It follows immediately that a DAG does not have any
+[*directed cycles*](https://en.wikipedia.org/wiki/Cycle_(graph_theory)#Directed_circuit,_cycle),
+so we could also define DAGs to be directed graphs without any
+directed cycles. These two definitions are equivalent.
+
+**Example.** There exists a topological sort for the directed graph G
+  in the above example, e.g., a ≤ b ≤ c ≤ d ≤ e ≤ f ≤ g ≤
+  h. Therefore, G is a DAG.
+
+**Exercise.** Come up with a different topological sort for G and
+  visualize it using
+  [http://arborjs.org/halfviz](http://arborjs.org/halfviz/).
 
 ## Terms and term DAGs
 
@@ -120,8 +147,8 @@ T is recursively defined to be the smallest set such that:
 
   - every constant symbol is a term: C ⊆ T;
 
-  - from every n terms t1,...,tn and every n-ary function symbol f ∈
-  Fn, a term f(t1,...,tn) ∈ T can be built.
+  - from every n terms t1,...,tn ∈ T and every n-ary function symbol f
+  ∈ Fn, there is a term f(t1,...,tn) ∈ T.
 
 **Definition.** A *term DAG* is a directed acyclic multigraph whose
 vertices are labeled with variable, constant, or function symbols,
@@ -130,14 +157,14 @@ outdegree of any vertex labeled with a function symbol f is equal to
 the arity of f.
 
 **Example.** Let V = {x0,x1,x2}, C = {c}, F1 = {f}, F2 = {g}, F3 =
-{h}, F4 = F5 = ... = ∅. Then T={x0, x1, x2, c, f(x0), f(x1), f(x2),
+{h}, F4 = F5 = ... = ∅. Then T = {x0, x1, x2, c, f(x0), f(x1), f(x2),
 f(c), g(x0,x0), g(x0,x1), ..., h(x0,x0,x0), h(x0,x0,x1), ...,
 f(f(x0)), ..., g(f(x0),h(x1,x2,f(c))), ...}. You can download and run
 the program
 [`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
 in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
-will output a random term (of appropriate size) from T, along with its
-term DAG. **Update:** Now you can also access the program via its
+will output a random term (of an appropriate size) from T, along with
+its term DAG. **Update:** Now you can also access the program via its
 [web interface](https://term-graph-iedy2lhg3a-an.a.run.app/).
 
 Let us take a closer look at the following example output of
@@ -312,11 +339,11 @@ the representation of the other, isomorphic term DAG:
 (7,[3,2])
 ```
 
-**Exercise.** The `term-graph.exe` program can also take two integers
-  `v` and `e` as its parameters: `term-graph v e` will try to generate
-  a random term whose term DAG roughly has `v` vertices and `e`
-  edges. Run it a few times, generate a pair of larger, isomorphic
-  term DAGs, and compute the isomorphism between them. Visualize both
-  term DAGs using
+**Exercise.** The
+  [web version](https://term-graph-iedy2lhg3a-an.a.run.app/) of the
+  `term-graph.exe` program can also generate a random term whose term
+  DAG has at least certain number of vertices and edges. Run it a few
+  times, generate a pair of larger, isomorphic term DAGs, and compute
+  the isomorphism between them. Visualize both term DAGs using
   [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and
   convince yourself that isomorphic graphs are indeed "the same".
