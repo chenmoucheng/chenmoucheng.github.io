@@ -76,9 +76,11 @@ programming, it is customary to pass instances of primitive datatypes
 by value and instances of more complicated, derived datatypes by
 reference, as is the case in this example.
 
-**Homework.** Implement the following five functions for handling
-  lists of edges and give a few convincing test cases to show the
-  correctness of your implementation.
+### Homework 1.
+
+Implement the following five functions for handling lists of edges and
+give a few convincing test cases to show the correctness of your
+implementation.
 
 ```
 int isEqListOfEdges(const ListOfEdges *es, const ListOfEdges *fs); // test if *es == *fs
@@ -141,12 +143,13 @@ exercise.
 **Lemma.** If we remove one or more vertices/edges from a DAG, then we
   would have another, possibly empty, DAG.
 
-**Homework.** Implement the following four functions and give a few
-  convincing test cases to show the correctness of your
-  implementation. You can use the
-  [web version](https://term-graph-iedy2lhg3a-an.a.run.app/) of the
-  `term-graph.exe` program to check whether a list of vertices is a
-  topological sort of a graph or not.
+### Homework 2.
+
+Implement the following four functions and give a few convincing test
+cases to show the correctness of your implementation. You can use the
+[web version](https://term-graph-iedy2lhg3a-an.a.run.app/) of the
+`term-graph.exe` program to check whether a list of vertices is a
+topological sort of a graph or not.
 
 
 ```

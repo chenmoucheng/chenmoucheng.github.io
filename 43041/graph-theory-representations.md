@@ -64,8 +64,7 @@ t(e).
 {a,b,c,d,e,f,g,h} and E = {(a,b), (a,c), (a,d), (b,d), (c,d), (d,e),
 (c,f), (f,g), (f,h), (g,h)}. In the lecture notes, there is a
 visualization of G as an undirected graph. To visualize G as a
-directed graph, you can visit
-[http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and
+directed graph, you can visit [http://arborjs.org/halfviz] and
 copy-paste the following text onto the pane on the right.
 
 ```
@@ -81,8 +80,7 @@ f -> h
 g -> h
 ```
 
-The visualization produced by
-[http://arborjs.org/halfviz](http://arborjs.org/halfviz/) is
+The visualization produced by [http://arborjs.org/halfviz] is
 interactive. For example, you can drag the vertices to make it look
 like the (undirected) graph in the lecture notes. As you can see, the
 edges in a directed graph are usually visualized using arrows, whereas
@@ -101,8 +99,7 @@ not predicated on the equality of their sources and targets, but
 rather on some other identities.
 
 In contrast to the lecture notes, we are mainly interested in
-multigraphs. Unfortunately,
-[http://arborjs.org/halfviz](http://arborjs.org/halfviz/) can only
+multigraphs. Unfortunately, [http://arborjs.org/halfviz] can only
 visualize simple graphs. You can try other (graph) visualization
 tools, such as [Cytoscape.js](https://js.cytoscape.org/), to see if
 you can visualize multigraphs.
@@ -128,8 +125,7 @@ directed cycles. These two definitions are equivalent.
   h. Therefore, G is a DAG.
 
 **Exercise.** Come up with a different topological sort for G and
-  visualize it using
-  [http://arborjs.org/halfviz](http://arborjs.org/halfviz/).
+  visualize it using [http://arborjs.org/halfviz].
 
 ## Terms and term DAGs
 
@@ -203,7 +199,7 @@ Vertex|0|2|3|4|5|6|7
 Symbol|`x0`|`x2`|`f`|`g`|`f`|`h`|`c`
 
 We can now visualize this 7-vertex term DAG, again using
-[http://arborjs.org/halfviz](http://arborjs.org/halfviz/):
+[http://arborjs.org/halfviz]:
 
 ```
 3"f" -> 2"x2"
@@ -345,5 +341,5 @@ the representation of the other, isomorphic term DAG:
   DAG has at least certain number of vertices and edges. Run it a few
   times, generate a pair of larger, isomorphic term DAGs, and compute
   the isomorphism between them. Visualize both term DAGs using
-  [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and
-  convince yourself that isomorphic graphs are indeed "the same".
+  [http://arborjs.org/halfviz] and convince yourself that isomorphic
+  graphs are indeed "the same".
