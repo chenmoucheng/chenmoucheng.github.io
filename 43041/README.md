@@ -40,7 +40,7 @@ set of questions posed in the handout.
 
   3. Graph isomorphism algorithms
 
-     - Basic algorithms for computing graph isomorphisms
+     - [Basic algorithms for computing graph isomorphisms](./basic-algorithms.md)
 
      - Prototype implementation in C
 

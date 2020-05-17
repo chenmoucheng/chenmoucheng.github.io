@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <sys/mman.h>
 #include <assert.h>
 
 // The basic type of vertices
@@ -266,6 +264,12 @@ int isaTopSort(const ListOfVertices *vs, const Graph *g);
 // A topological sort of a graph
 int topSort(ListOfVertices *vs, const Graph *g);
 
+// Test if a list of vertices represents an isomorphism between two rooted term DAGs
+int isanIsomorphism(const ListOfVertices *phi, const Graph *g, const Graph *h);
+
+// An isomorphism between two rooted term DAGs
+int isomorphism(ListOfVertices *iso, const Graph *g, const Graph *h);
+
 // Example uses
 
 void die(const char *file, unsigned int line, const char *msg)
@@ -281,18 +285,10 @@ int isEven(Vertex v)
 
 int main(int argc, char *argv[])
 {
-    const char *input;
+    const char *input = "0\n8\n0\n0\n0\n3 6 7 8\n3 3 1 1\n1 6\n1 1\n2 0 0\n3 5 0 2\n";
     Graph g, h;
     Edge e, f;
     ListOfVertices vs, us;
-
-    if (argc != 2) {
-        printf("Usage: %s graph_description_file\n", argv[0]);
-        exit(-1);
-    }
-
-    input = mmap(0, 1000, PROT_READ, MAP_SHARED, open(argv[1], O_RDONLY), 0);
-    if (input == MAP_FAILED) die(__FILE__, __LINE__, "cannot open file");
 
     readGraph(&g, input);
     showGraph(&g);

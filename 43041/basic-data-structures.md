@@ -113,10 +113,10 @@ while (!isNullListOfVertices(&S)) {
     Vertex u ← removeAtHeadListOfVertices(&S);
     appendListOfVertices(&L, u);
     foreach [ Vertex v | (u,v) ∈ E ] {
-	    G ← (V, E \ {(u,v)});
-	    if (indegree(&G, v) == 0) appendListOfVertices(&S, v);
-	}
-	G ← (V \ {u}, E);
+        G ← (V, E \ {(u,v)});
+        if (indegree(&G, v) == 0) appendListOfVertices(&S, v);
+    }
+    G ← (V \ {u}, E);
 }
 return isNullListOfEdges(&E);
 Output: ListOfVertices L (when E = ∅)

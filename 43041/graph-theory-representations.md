@@ -26,8 +26,8 @@ most important definitions and facts that will be useful to us.
   for all x ∈ X.
 
 **Definition.** For a set X, there is a unique
-[*identity function*](https://en.wikipedia.org/wiki/Identity_function)
-1: X→X on X that sends every x ∈ X to itself.
+  [*identity function*](https://en.wikipedia.org/wiki/Identity_function)
+  1: X→X on X that sends every x ∈ X to itself.
 
 **Definition.** A function f: X→Y is
   [*surjective*](https://en.wikipedia.org/wiki/Surjective_function) if
@@ -43,30 +43,31 @@ most important definitions and facts that will be useful to us.
   such that g ⚬ f = 1 and f ⚬ g = 1.
 
 **Definition.** A
-[graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)) G
-is an [unordered pair](https://en.wikipedia.org/wiki/Unordered_pair)
-(V,E) of sets, where each v ∈ V is a *vertex* of G, and each e ∈ E, an
-*edge* of G. An edge *connects* two (not necessarily distinct)
-vertices.
+  [graph](https://en.wikipedia.org/wiki/Graph_(discrete_mathematics))
+  G is an
+  [unordered pair](https://en.wikipedia.org/wiki/Unordered_pair) (V,E)
+  of sets, where each v ∈ V is a *vertex* of G, and each e ∈ E, an
+  *edge* of G. An edge *connects* two (not necessarily distinct)
+  vertices.
 
 **Definition.** A
-[*directed graph*](https://en.wikipedia.org/wiki/Directed_graph) is
-graph G = (V,E) such that each edge e ∈ E is an
-[ordered pair](https://en.wikipedia.org/wiki/Ordered_pair) (u,v) for
-some u,v ∈ V, i.e., there are functions s,t: E→V such that for each
-edge (u,v) ∈ E, s(u,v) = u and t(u,v) = v.
+  [*directed graph*](https://en.wikipedia.org/wiki/Directed_graph) is
+  graph G = (V,E) such that each edge e ∈ E is an
+  [ordered pair](https://en.wikipedia.org/wiki/Ordered_pair) (u,v) for
+  some u,v ∈ V, i.e., there are functions s,t: E→V such that for each
+  edge (u,v) ∈ E, s(u,v) = u and t(u,v) = v.
 
 In other words, we tend to think of an edge e ∈ E of a directed graph
 G = (V,E) as an arrow, pointing from its *source* s(e) to its *target*
 t(e).
 
 **Example** (from the lecture notes). Let G = (V,E) for V =
-{a,b,c,d,e,f,g,h} and E = {(a,b), (a,c), (a,d), (b,d), (c,d), (d,e),
-(c,f), (f,g), (f,h), (g,h)}. In the lecture notes, there is a
-visualization of G as an undirected graph. To visualize G as a
-directed graph, you can visit
-[http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and
-copy-paste the following text onto the pane on the right.
+  {a,b,c,d,e,f,g,h} and E = {(a,b), (a,c), (a,d), (b,d), (c,d), (d,e),
+  (c,f), (f,g), (f,h), (g,h)}. In the lecture notes, there is a
+  visualization of G as an undirected graph. You can use
+  [http://arborjs.org/halfviz](http://arborjs.org/halfviz/)
+  [to visualize G](http://arborjs.org/halfviz/#/MTI5MTg) as a directed
+  graph.
 
 ```
 a -> b
@@ -115,13 +116,13 @@ you can visualize multigraphs.
   u ≤ v in the ordering.
 
 **Definition.** A
-[*directed acyclic graph (DAG)*](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
-is a directed graph that has a topological sort.
+  [*directed acyclic graph (DAG)*](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
+  is a directed graph that has a topological sort.
 
 **Remark.** It follows immediately that a DAG does not have any
-[*directed cycles*](https://en.wikipedia.org/wiki/Cycle_(graph_theory)#Directed_circuit,_cycle),
-so we could also define DAGs to be directed graphs without any
-directed cycles. These two definitions are equivalent.
+  [*directed cycles*](https://en.wikipedia.org/wiki/Cycle_(graph_theory)#Directed_circuit,_cycle),
+  so we could also define DAGs to be directed graphs without any
+  directed cycles. These two definitions are equivalent.
 
 **Example.** There exists a topological sort for the directed graph G
   in the above example, e.g., a ≤ b ≤ c ≤ d ≤ e ≤ f ≤ g ≤
@@ -138,10 +139,10 @@ explore a particular application of DAGs to
 [*term unification*](https://en.wikipedia.org/wiki/Unification_(computer_science)#Syntactic_unification_of_first-order_terms).
 
 **Definition.** Given a set V of *variable symbols*, a set C of
-*constant symbols*, and sets Fn of *n-ary function symbols*, for each
-positive integer n, the set of
-[*(unsorted first-order) terms*](https://en.wikipedia.org/wiki/Term_(logic)#Formal_definition)
-T is recursively defined to be the smallest set such that:
+  *constant symbols*, and sets Fn of *n-ary function symbols*, for
+  each positive integer n, the set of
+  [*(unsorted first-order) terms*](https://en.wikipedia.org/wiki/Term_(logic)#Formal_definition)
+  T is recursively defined to be the smallest set such that:
 
   - every variable symbol is a term: V ⊆ T;
 
@@ -151,24 +152,26 @@ T is recursively defined to be the smallest set such that:
   ∈ Fn, there is a term f(t1,...,tn) ∈ T.
 
 **Definition.** A *term DAG* is a directed acyclic multigraph whose
-vertices are labeled with variable, constant, or function symbols,
-whose outgoing edges from any vertex are *ordered*, and where the
-outdegree of any vertex labeled with a function symbol f is equal to
-the arity of f.
+  vertices are labeled with variable, constant, or function symbols,
+  whose outgoing edges from any vertex are *ordered*, and where the
+  outdegree of any vertex labeled with a function symbol f is equal to
+  the arity of f.
 
 **Example.** Let V = {x0,x1,x2}, C = {c}, F1 = {f}, F2 = {g}, F3 =
-{h}, F4 = F5 = ... = ∅. Then T = {x0, x1, x2, c, f(x0), f(x1), f(x2),
-f(c), g(x0,x0), g(x0,x1), ..., h(x0,x0,x0), h(x0,x0,x1), ...,
-f(f(x0)), ..., g(f(x0),h(x1,x2,f(c))), ...}. You can download and run
-the program
-[`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
-in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
-will output a random term (of an appropriate size) from T, along with
-its term DAG. **Update:** Now you can also access the program via its
-[web interface](https://term-graph-iedy2lhg3a-an.a.run.app/).
+  {h}, F4 = F5 = ... = ∅. Then T = {x0, x1, x2, c, f(x0), f(x1),
+  f(x2), f(c), g(x0,x0), g(x0,x1), ..., h(x0,x0,x0), h(x0,x0,x1), ...,
+  f(f(x0)), ..., g(f(x0),h(x1,x2,f(c))), ...}. You can download and
+  run the program
+  [`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
+  in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
+  will output a random term (of an appropriate size) from T, along
+  with its term DAG. **Update:** Now you can also access the program
+  via its
+  [web interface](https://term-graph-iedy2lhg3a-an.a.run.app/).
 
-Let us take a closer look at the following example output of
-`term-graph.exe`.
+Let us take a closer look at the following
+[example output](https://term-graph-iedy2lhg3a-an.a.run.app/?t=h%28g%28c%2Cx2%29%2Cf%28x2%29%2Cf%28x0%29%29)
+and its [visualization](http://arborjs.org/halfviz/#/MTI5MjA).
 
 ```
 ; h(g(c,x2),f(x2),f(x0))
@@ -202,8 +205,9 @@ Vertex|0|2|3|4|5|6|7
 :---|---:|---:|---:|---:|---:|---:|---:
 Symbol|`x0`|`x2`|`f`|`g`|`f`|`h`|`c`
 
-We can now visualize this 7-vertex term DAG, again using
-[http://arborjs.org/halfviz](http://arborjs.org/halfviz/):
+We can now
+[visualize this 7-vertex term DAG](http://arborjs.org/halfviz/#/MTI5MTk),
+again using [http://arborjs.org/halfviz](http://arborjs.org/halfviz/):
 
 ```
 3"f" -> 2"x2"
