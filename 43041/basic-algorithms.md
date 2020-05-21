@@ -108,4 +108,23 @@ int isanIsomorphism(const ListOfVertices *phi, const Graph *g, const Graph *h);
 
 // An isomorphism between two rooted term DAGs
 int isomorphism(ListOfVertices *iso, const Graph *g, const Graph *h);
+
+/*
+ * // Sample test vectors:
+ * 
+ * Graph g, h;
+ * ListOfVertices phi;
+ * 
+ * readGraph(&g, "1\n7\n0\n0\n1 2\n2 7 2\n1 1\n3 4 3 5\n0\n");
+ * readGraph(&h, "1\n7\n0\n0\n0\n3 7 6 5\n1 1\n1 2\n2 3 2\n");
+ * 
+ * isomorphism(&phi, &g, &h);     // 1
+ * showListOfVertices(&phi);      // 7 1 2 6 7 5 4 3
+ * isanIsomorphism(&phi, &g, &h); // 1
+ * 
+ * freeGraph(&g);
+ * freeGraph(&h);
+ * freeListOfVertices(&phi);
+ */
+
 ```

@@ -88,6 +88,24 @@ void copyListOfEdges(ListOfEdges *es, const ListOfEdges *fs);      // copy fs to
 int isNullListOfEdges(const ListOfEdges *es);                      // test if *es == []
 void showListOfEdges(const ListOfEdges *es);                       // print es to stdout
 void freeListOfEdges(ListOfEdges *es);                             // free the memory used by es
+
+/*
+ * // Sample test vectors:
+ * 
+ * ListOfEdges es, fs;
+ * 
+ * readListOfEdges(&es, "2\n0 -> 1\n1 -> 2\n");
+ * isNullListOfEdges(&es);    // 0
+ * copyListOfEdges(&fs, &es);
+ * isEqListOfEdges(&es, &fs); // 1
+ * showListOfEdges(&fs);
+ * // 2
+ * // 0 -> 1
+ * // 1 -> 2
+ * freeListOfEdges(&es);
+ * freeListOfEdges(&fs);
+ */
+
 ```
 
 ## Topological sorts of a directed graph, revisited
@@ -164,6 +182,41 @@ int isaTopSort(const ListOfVertices *vs, const Graph *g);
 
 // A topological sort of a graph
 int topSort(ListOfVertices *vs, const Graph *g);
+
+/*
+ * // Sample test vectors:
+ * 
+ * Graph g;
+ * ListOfEdges es;
+ * ListOfVertices vs;
+ * 
+ * readGraph(&g, "0\n8\n0\n0\n0\n3 6 7 8\n3 3 1 1\n1 6\n1 1\n2 0 0\n3 5 0 2\n");
+ * edges(&es, &g);
+ * showListOfEdges(&es);
+ * // 13
+ * // 3 -> 6
+ * // 3 -> 7
+ * // 3 -> 8
+ * // 4 -> 3
+ * // 4 -> 1
+ * // 4 -> 1
+ * // 5 -> 6
+ * // 6 -> 1
+ * // 7 -> 0
+ * // 7 -> 0
+ * // 8 -> 5
+ * // 8 -> 0
+ * // 8 -> 2
+ * indegree(&g, 0);     // 3
+ * indegree(&g, 4);     // 0
+ * 
+ * topSort(&vs, &g);
+ * isaTopSort(&vs, &g); // 1
+ * 
+ * freeGraph(&g);
+ * freeListOfEdges(&es);
+ * freeListOfVertices(&vs);
+ * /
 
 ```
 
