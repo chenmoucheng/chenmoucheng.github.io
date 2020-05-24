@@ -22,7 +22,7 @@ and recursive algorithms for solving a special class of graph
 isomorphism problems, as well as its applications in compiler
 optimization. At the end of the experiments, each student needs to
 turn in a report that includes experimental results and answers to a
-set of questions posed in the handout.
+set of questions posed in [the handout](./handout.md).
 
 基本的に下記の日程で実習を進める。
 
@@ -30,21 +30,22 @@ set of questions posed in the handout.
 
      - Overview of this set of experiments
 
-     - [Review of graph theory and graph representations](./graph-theory-representations.md)
+     - Review of [graph theory](./handout.md#graph-theory) and
+       [graph representations](./handout.md#graph-representations)
 
-  2. Basic data structures
+  2. [Basic data structures](./handout.md#basic-data-structures)
 
-     - [Basic data structures for handling graphs](./basic-data-structures.md)
+     - Basic data structures for handling graphs
 
      - 質疑応答
 
-  3. Graph isomorphism algorithms
+  3. [Graph isomorphism algorithms](./handout.md#graph-isomorphism-algorithms)
 
-     - [Basic algorithms for computing graph isomorphisms](./basic-algorithms.md)
+     - Basic algorithms for computing graph isomorphisms
 
      - Prototype implementation in C
 
-  4. Term unification
+  4. [Term unification](./handout.md#term-unification)
 
      - Introduction to term unification
 
