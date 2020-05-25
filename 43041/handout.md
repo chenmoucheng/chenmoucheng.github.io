@@ -739,7 +739,7 @@ int isomorphism(ListOfVertices *iso, const Graph *g, const Graph *h);
   *most general unifier* φ in the sense that for any unifier φ' of E,
   there is a unique substitution ψ such that φ' = ψ ⚬ φ.
 
-**Definition.** A rooted term graph G is a *tree* if and only if there
+**Definition.** A rooted term DAG G is a *tree* if and only if there
 is a unique access path from the root to every other vertex of G. In
 contrast, G is *fully collapsed* if and only if no two rooted
 subgraphs of G are isomorphic.
@@ -747,7 +747,7 @@ subgraphs of G are isomorphic.
 Now we are ready to give a high-level description of a recursive
 descent algorithm for computing the most general unifier of two terms
 s and t. We start by computing G_s and G_t, the fully collapsed rooted
-term graphs for s and t, respectively. Then we apply the following
+term DAGs for s and t, respectively. Then we apply the following
 recursive algorithm to r_s and r_t, the roots of G_s and G_t,
 respectively, and the result will be the most general unifier (if
 exists) of s and t.
@@ -757,26 +757,26 @@ exists) of s and t.
 ```
 unify(s,t)
 {
-	if (s == t) {
-		φ = the identity substitution 1;
-	}
-	else if (s is a variable symbol x && x does not appear in t) {
-		φ = the substitution that sends x to t and fixes all other variables;
-	}
-	else if (t is a variable symbol x && x does not appear in s) {
-		φ = the substitution that sends x to s and fixes all other variables;
-	}
-	else if (s == f(s_1, ..., s_n) && t = f(t_1, ..., t_n)) {
-		// f is an n-ary function symbol
-		for (i = 1; i <= n; i++) {
-			φ_i = unify(s_i, t_i);
-		}
-		φ = φ_n ⚬ ... ⚬ φ_1;
-	}
-	else return FAIL;
+  if (s == t) {
+    φ = the identity substitution 1;
+  }
+  else if (s is a variable symbol x && x does not appear in t) {
+    φ = the substitution that sends x to t and fixes all other variables;
+  }
+  else if (t is a variable symbol x && x does not appear in s) {
+    φ = the substitution that sends x to s and fixes all other variables;
+  }
+  else if (s == f(s_1, ..., s_n) && t == f(t_1, ..., t_n)) {
+    // f is an n-ary function symbol
+    for (i = 1; i <= n; i++) {
+      φ_i = unify(s_i, t_i);
+    }
+    φ = φ_n ⚬ ... ⚬ φ_1;
+  }
+  else return FAIL;
 
-    G_s = φ(G_s);
-    G_t = φ(G_t);
-	return φ;
+  G_s = φ(G_s);
+  G_t = φ(G_t);
+  return φ;
 }
 ```
