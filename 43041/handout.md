@@ -151,6 +151,11 @@ explore a particular application of DAGs to
   - from every n terms t1,...,tn ∈ T and every n-ary function symbol f
   ∈ Fn, there is a term f(t1,...,tn) ∈ T.
 
+**Definition.** The *indegree* of a vertex v ∈ V in a directed
+  multigraph G = (V,E) is the number of edges going into v, i.e., |{ e
+  ∈ E : t(e) = v }|. Similarly, the *outdegree* of v is the number of
+  edges going out from v, i.e., |{ e ∈ E : s(e) = v }|.
+
 **Definition.** A *term DAG* is a directed acyclic multigraph whose
   vertices are labeled with variable, constant, or function symbols,
   whose outgoing edges from any vertex are *ordered*, and where the
@@ -291,11 +296,12 @@ for the same term DAG:
   [*graph homomorphism*](https://en.wikipedia.org/wiki/Graph_homomorphism#Definitions)
   φ from a graph G = (V,E) to G' = (V',E') is a function from V to V'
   that *preserves* the graph structure of G; that is, for any edge e =
-  (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a graph
-  homomorphism is a
+  (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a bijective
+  function φ from V to V' is a
   [*graph isomorphism*](https://en.wikipedia.org/wiki/Graph_isomorphism)
-  when it is bijective as a function between the vertices of the two
-  graph, in which case the two graphs are *isomorphic* to each other.
+  if both φ and its inverse are graph homomorphisms from G to G',
+  respectively. In this case, the two graphs G and G' are *isomorphic*
+  to each other.
 
 Given a term, the `term-graph.exe` program can also generate a random,
 isomorphic term DAG:
@@ -465,13 +471,7 @@ void freeListOfEdges(ListOfEdges *es);                             // free the m
  We recall that a topological sort of a directed graph G = (V,E) is a
 linear ordering on V such that for every edge e ∈ E with s(e) = u and
 t(e) = v, u ≤ v in the ordering. Here we give a common way for
-computing a topological sort of a directed graph. For that, we will
-need the following definition.
-
-**Definition.** The *indegree* of a vertex v ∈ V in a directed
-  multigraph G = (V,E) is the number of edges going into v, i.e., |{ e
-  ∈ E : t(e) = v }|. Similarly, the *outdegree* of v is the number of
-  edges going out from v, i.e., |{ e ∈ E : s(e) = v }|.
+computing a topological sort of a directed graph.
 
 **Algorithm ([Kahn, 1962](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)).**
 
