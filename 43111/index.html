@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>情報セキュリティＣ</title>
+  </head>
+  <body>
+
+    <script type="text/javascript" src="./script.js"></script>
+
+    <h1>情報セキュリティＣ: Breaking OW-security of AES</h1>
+
+
+    Name: <textarea id="name" rows="1" cols="32">Chen-Mou Cheng</textarea>
+    <select id="mode"><option value="AES-CBC">CBC mode</option><option value="AES-CTR">CTR mode</option></select>
+    <button type="button" onclick="generate_challenge()">Generate challenge &rarr;</button>
+    <textarea id="challenge_ciphertext" rows="1" cols="64" readonly></textarea>
+
+    <hr>
+
+    <h2>Encryption oracle</h2>
+    <textarea id="plaintext_to_encrypt" rows="6" cols="32"></textarea>
+    <button type="button" onclick="encode()">Encode &rarr;</button>
+    <textarea id="plaintext_encoded" rows="6" cols="32"></textarea>
+    <button type="button" onclick="query_encrypt_oracle()">Query &rarr;</button>
+    <textarea id="plaintext_encoded_encrypted" rows="6" cols="32" readonly></textarea>
+
+    <hr>
+
+    <h2>Decryption oracle</h2>
+    <textarea id="ciphertext_to_decrypt" rows="6" cols="32"></textarea>
+    <button type="button" onclick="query_decrypt_oracle()">Query &rarr;</button>
+    <textarea id="ciphertext_decrypted" rows="6" cols="32" readonly></textarea>
+    <button type="button" onclick="decode()">Decode &rarr;</button>
+    <textarea id="ciphertext_decrypted_decoded" rows="6" cols="32" readonly></textarea>
+
+    <hr>
+
+    <h2>Submit your answer</h2>
+    <textarea id="answer" rows="6" cols="32"></textarea>
+    <button type="button" onclick="submit_answer()">Submit</button>
+    <textarea id="check_result" rows="6" cols="32" readonly></textarea>
+
+  </body>
+</html>
+
