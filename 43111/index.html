@@ -9,8 +9,27 @@
 
     <h1>情報セキュリティＣ: Breaking OW-security of AES</h1>
 
+    <p> In this homework assignment, you will play the OW-security
+    game to break AES encryption.  After filling in your name and
+    generating a challenge ciphertext, you can optionally interact
+    with an encryption oracle and a decryption oracle before
+    submitting your answer.  Depending on whether you use these
+    oracles, your goal is to break the OW-PASS, OW-CPA, or OW-CCA
+    security of <em>both AES-CBC and AES-CTR </em>.
 
-    Name: <textarea id="name" rows="1" cols="32">Chen-Mou Cheng</textarea>
+    <p> Note: We use <a
+    href="https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7">PKCS#7
+    padding</a> for AES-CBC in this assignment; the decryption oracle
+    will reject any ciphertext whose corresponding plaintext is not
+    properly padded.
+
+    <p> You need to turn in a detailed report documenting <em>how and
+    why</em> you are able (or, in the case of failure, unable) to
+    break the OW-security of AES on <a
+    href="https://lms-wc.el.kanazawa-u.ac.jp/webclass/course.php/20025243111000/">LMS
+    </a> before <em>December 11, 2020</em>.
+
+    <p> Name: <textarea id="name" rows="1" cols="32">Chen-Mou Cheng</textarea>
     <select id="mode"><option value="AES-CBC">CBC mode</option><option value="AES-CTR">CTR mode</option></select>
     <button type="button" onclick="generate_challenge()">Generate challenge &rarr;</button>
     <textarea id="challenge_ciphertext" rows="1" cols="64" readonly></textarea>
