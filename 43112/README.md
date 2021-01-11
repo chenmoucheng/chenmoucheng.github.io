@@ -83,3 +83,7 @@ collide with it.  This way we just need to remember two elements $(x_i,x_{2i})$
 at the cost of computing $f$ for three times at each step.  Furthermore, while
 the naive collision-detection mechanism can be easily parallelized, Floyd's
 cycle-finding algorithm has a sequential nature.
+
+<script type="text/javascript" charset="utf-8" 
+src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,
+https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
