@@ -125,14 +125,14 @@ type="button" onclick="generate_challenges()">Generate DLP challenges</button>
    <p><button type="button"
    onclick="modular_exponentiate('base2','exp2','mod2','res2')">Hint:</button>
    <span id="base2">11391220849310</span> ^ <textarea id="exp2" rows="1"
-   cols="14">29733538831301</textarea> = <span id="res2">1</span> (mod <span
+   cols="17">29733538831301</textarea> = <span id="res2">1</span> (mod <span
    id="mod2">1070407397926837</span>)
 3. (Bonus) <span id="h3">?</span> = 657139733149567003766 <sup>?</sup> (mod
    1077984309859658267861)
    <p><button type="button"
    onclick="modular_exponentiate('base3','exp3','mod3','res3')">Hint:</button>
    <span id="base3">657139733149567003766</span> ^ <textarea id="exp3" rows="1"
-   cols="19">1738684370741384303</textarea> = <span id="res3">1</span> (mod <span
+   cols="22">1738684370741384303</textarea> = <span id="res3">1</span> (mod <span
    id="mod3">1077984309859658267861</span>)
 
 <script type="text/javascript" charset="utf-8" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML, https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
