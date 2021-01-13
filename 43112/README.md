@@ -118,21 +118,21 @@ type="button" onclick="generate_challenges()">Generate DLP challenges</button>
 1. (60%) <span id="h1">?</span> = 13008203 <sup>?</sup> (mod 28524863)
    <p><button type="button"
    onclick="modular_exponentiate('base1','exp1','mod1','res1')">Hint:</button>
-   <span id="base1">13008203</span> <sup><textarea id="exp1" rows="2"
-   cols="8">14262431</textarea></sup> = <span id="res1">1</span> (mod <span
+   <span id="base1">13008203</span> ^ <textarea id="exp1" rows="1"
+   cols="8">14262431</textarea> = <span id="res1">1</span> (mod <span
    id="mod1">28524863</span>)
 2. (40%) <span id="h2">?</span> = 11391220849310 <sup>?</sup> (mod 1070407397926837)
    <p><button type="button"
    onclick="modular_exponentiate('base2','exp2','mod2','res2')">Hint:</button>
-   <span id="base2">11391220849310</span> <sup><textarea id="exp2" rows="2"
-   cols="14">29733538831301</textarea></sup> = <span id="res2">1</span> (mod <span
+   <span id="base2">11391220849310</span> ^ <textarea id="exp2" rows="1"
+   cols="14">29733538831301</textarea> = <span id="res2">1</span> (mod <span
    id="mod2">1070407397926837</span>)
 3. (Bonus) <span id="h3">?</span> = 657139733149567003766 <sup>?</sup> (mod
    1077984309859658267861)
    <p><button type="button"
    onclick="modular_exponentiate('base3','exp3','mod3','res3')">Hint:</button>
-   <span id="base3">657139733149567003766</span> <sup><textarea id="exp3" rows="2"
-   cols="19">1738684370741384303</textarea></sup> = <span id="res3">1</span> (mod <span
+   <span id="base3">657139733149567003766</span> ^ <textarea id="exp3" rows="1"
+   cols="19">1738684370741384303</textarea> = <span id="res3">1</span> (mod <span
    id="mod3">1077984309859658267861</span>)
 
 <script type="text/javascript" charset="utf-8" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML, https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
