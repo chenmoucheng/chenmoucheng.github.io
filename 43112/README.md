@@ -112,22 +112,48 @@ You need to turn in a detailed report documenting how and why you are able (or,
 in the case of failure, unable) to solve these DLP instances on LMS before
 February 16, 2021.
 
-Name: <textarea id="name" rows="1" cols="16">Chen-Mou Cheng</textarea> <button
+Name: <textarea id="name" rows="1" cols="24">Chen-Mou Cheng</textarea> <button
 type="button" onclick="generate_challenges()">Generate DLP challenges</button>
 
-1. (60%) <span id="h1">?</span> = 13008203 <sup>?</sup> (mod 28524863)
+1. (40%) Let $G$ be the multiplicative group $(\mathbb Z/101\mathbb Z)^\times$.
+   Let $g=2$ and $h=3$.  Let $f:G\rightarrow G$ be such that
+
+   $$ f(x) = \left\{\begin{aligned}
+   hx\text{ if }x\in S_1:=\{0\leq x<101\,|\,x=1\bmod 101\}, \\
+   x^2\text{ if }x\in S_2:=\{0\leq x<101\,|\,x=2\bmod 101\}, \\
+   gx\text{ if }x\in S_3:=\{0\leq x<101\,|\,x=3\bmod 101\}. \\
+   \end{aligned}\right. $$
+
+   Find an $x$ such that $2^x=3\bmod 101$ using Pollard's rho method by
+   completing the following table.
+
+   $$ \begin{array}{lll|l}
+   i & a_i & b_i & 2^{a_i}3^{b_i}\bmod 101 \\ \hline\hline
+   0 & 0 & 0 & 1 \\
+   1 & 0 & 1 & 3 \\
+   2 & 1 & 1 & 6 \\
+   3 & 2 & 1 & 12 \\
+   4 & 3 & 1 & 24 \\
+   5 & 4 & 1 & 48 \\
+   6 & 5 & 1 & 96 \\
+   7 & 6 & 1 & 91 \\
+   & \vdots & & \vdots
+   \end{array} $$
+
+2. (40%) <span id="h1">?</span> = 13008203 <sup>?</sup> (mod 28524863)
    <p><button type="button"
    onclick="modular_exponentiate('base1','exp1','mod1','res1')">Hint:</button>
    <span id="base1">13008203</span> ^ <textarea id="exp1" rows="1"
-   cols="8">14262431</textarea> = <span id="res1">1</span> (mod <span
+   cols="9">14262431</textarea> = <span id="res1">1</span> (mod <span
    id="mod1">28524863</span>)
-2. (40%) <span id="h2">?</span> = 11391220849310 <sup>?</sup> (mod 1070407397926837)
+3. (20%) <span id="h2">?</span> = 11391220849310 <sup>?</sup> (mod
+   1070407397926837)
    <p><button type="button"
    onclick="modular_exponentiate('base2','exp2','mod2','res2')">Hint:</button>
    <span id="base2">11391220849310</span> ^ <textarea id="exp2" rows="1"
    cols="17">29733538831301</textarea> = <span id="res2">1</span> (mod <span
    id="mod2">1070407397926837</span>)
-3. (Bonus) <span id="h3">?</span> = 657139733149567003766 <sup>?</sup> (mod
+4. (Bonus) <span id="h3">?</span> = 657139733149567003766 <sup>?</sup> (mod
    1077984309859658267861)
    <p><button type="button"
    onclick="modular_exponentiate('base3','exp3','mod3','res3')">Hint:</button>
