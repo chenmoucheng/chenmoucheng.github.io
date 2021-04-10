@@ -162,20 +162,17 @@ explore a particular application of DAGs to
   outdegree of any vertex labeled with a function symbol f is equal to
   the arity of f.
 
-**Example.** Let V = {x0,x1,x2}, C = {c}, F1 = {f}, F2 = {g}, F3 =
-  {h}, F4 = F5 = ... = ∅. Then T = {x0, x1, x2, c, f(x0), f(x1),
-  f(x2), f(c), g(x0,x0), g(x0,x1), ..., h(x0,x0,x0), h(x0,x0,x1), ...,
-  f(f(x0)), ..., g(f(x0),h(x1,x2,f(c))), ...}. You can download and
-  run the program
-  [`term-graph.exe`](https://media.githubusercontent.com/media/chenmoucheng/chenmoucheng.github.io/master/43041/code/term-graph.exe)
-  in [`cmd.exe`](https://ja.wikipedia.org/wiki/Cmd.exe); every time it
-  will output a random term (of an appropriate size) from T, along
-  with its term DAG. **Update:** Now you can also access the program
-  via its
-  [web interface](https://term-graph-iedy2lhg3a-an.a.run.app/).
+**Example.** Let V = {x0,x1,x2}, C = {c}, F1 = {f}, F2 = {g}, F3 = {h}, F4 = F5
+  = ... = ∅. Then T = {x0, x1, x2, c, f(x0), f(x1), f(x2), f(c), g(x0,x0),
+  g(x0,x1), ..., h(x0,x0,x0), h(x0,x0,x1), ..., f(f(x0)), ...,
+  g(f(x0),h(x1,x2,f(c))), ...}.
 
-Let us take a closer look at the following
-[example output](https://term-graph-iedy2lhg3a-an.a.run.app/?t=h%28g%28c%2Cx2%29%2Cf%28x2%29%2Cf%28x0%29%29)
+### A web-based generator of random terms and term DAGs
+
+We provide [`term-graph`](https://term-graph-iedy2lhg3a-an.a.run.app/), a
+web-based generator of random terms from T and their associated term DAGs. Let
+us take a closer look at the following [example
+output](https://term-graph-iedy2lhg3a-an.a.run.app/?t=h%28g%28c%2Cx2%29%2Cf%28x2%29%2Cf%28x0%29%29)
 and its [visualization](http://arborjs.org/halfviz/#/MTI5MjA).
 
 ```
@@ -303,11 +300,9 @@ for the same term DAG:
   respectively. In this case, the two graphs G and G' are *isomorphic*
   to each other.
 
-Given a term, the `term-graph.exe` program can also generate a random,
-isomorphic term DAG:
+Given a term, `term-graph` can also generate a random, isomorphic term DAG:
 
 ```
-C:¥> term-graph
 ; h(g(c,x2),f(x2),f(x0))
 ; 6
 3 -> 2
@@ -317,7 +312,9 @@ C:¥> term-graph
 6 -> 4
 6 -> 3
 6 -> 5
-C:¥> term-graph 'h(g(c,x2),f(x2),f(x0))'
+```
+
+```
 ; 4
 4 -> 7
 4 -> 6
@@ -349,14 +346,12 @@ the representation of the other, isomorphic term DAG:
 (7,[3,2])
 ```
 
-**Exercise.** The
-  [web version](https://term-graph-iedy2lhg3a-an.a.run.app/) of the
-  `term-graph.exe` program can also generate a random term whose term
-  DAG has at least certain number of vertices and edges. Run it a few
-  times, generate a pair of larger, isomorphic term DAGs, and compute
-  the isomorphism between them. Visualize both term DAGs using
-  [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and
-  convince yourself that isomorphic graphs are indeed "the same".
+**Exercise.** The [`term-graph`](https://term-graph-iedy2lhg3a-an.a.run.app/)
+  can also generate a random term whose term DAG has at least certain number of
+  vertices and edges.  Run it a few times, generate a pair of larger, isomorphic
+  term DAGs, and compute the isomorphism between them.  Visualize both term DAGs
+  using [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and convince
+  yourself that isomorphic graphs are indeed "the same".
 
 ## Basic data structures
 
@@ -515,11 +510,10 @@ exercise.
 
 ### Homework 2.
 
-Implement the following four functions and give a few convincing test
-cases to show the correctness of your implementation. You can use the
-[web version](https://term-graph-iedy2lhg3a-an.a.run.app/) of the
-`term-graph.exe` program to check whether a list of vertices is a
-topological sort of a graph or not.
+Implement the following four functions and give a few convincing test cases to
+show the correctness of your implementation.  You can use
+[`term-graph`](https://term-graph-iedy2lhg3a-an.a.run.app/) to check whether a
+list of vertices is a topological sort of a graph or not.
 
 
 ```

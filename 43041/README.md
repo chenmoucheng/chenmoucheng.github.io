@@ -17,12 +17,11 @@ graph-theoretic problems as a vehicle.
 
 ### 実験の進め方
 
-In the experiments, the students shall learn the basic data structures
-and recursive algorithms for solving a special class of graph
-isomorphism problems, as well as its applications in compiler
-optimization. At the end of the experiments, each student needs to
-turn in a report that includes experimental results and answers to a
-set of questions posed in [the handout](./handout.md).
+In the experiments, the students shall learn the basic data structures and
+recursive algorithms for solving a special class of graph isomorphism problems,
+as well as its applications in compiler optimization. At the end of the
+experiments, each student needs to turn in a report that includes experimental
+results and answers to a set of questions posed in the [handout](./handout.md).
 
 基本的に下記の日程で実習を進める。
 
