@@ -2,7 +2,7 @@
 
 ## Solving the discrete logarithm problem (DLP) with Pollard's rho method
 
-Let \(G\) be a finite cyclic group of order n written multiplicatively.  Let $g$
+Let $G$ be a finite cyclic group of order n written multiplicatively.  Let $g$
 be a generator of $G$.  In general, DLP is the problem of finding an integer $x$
 such that $h=g^x$ given $h\in G$.  One way to solve DLP is to find a suitable
 relation between $g$ and $h$, e.g., $g^ah^b=1_G$, in which case $x=−a/b\bmod n$.
@@ -161,6 +161,7 @@ type="button" onclick="generate_challenges()">Generate DLP challenges</button>
    cols="22">1738684370741384303</textarea> = <span id="res3">1</span> (mod <span
    id="mod3">1077984309859658267861</span>)
 
-<script type="text/javascript" charset="utf-8" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML, https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript" src="./biginteger.js"></script>
 <script type="text/javascript" src="./script.js"></script>
