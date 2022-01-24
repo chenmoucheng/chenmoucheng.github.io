@@ -162,6 +162,13 @@ type="button" onclick="generate_challenges()">Generate DLP challenges</button>
    id="mod3">1077984309859658267861</span>)
 
 <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
+</script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript" src="./biginteger.js"></script>
 <script type="text/javascript" src="./script.js"></script>
