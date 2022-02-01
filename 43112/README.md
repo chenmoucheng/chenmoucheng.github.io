@@ -110,7 +110,7 @@ clicking the "Hint:" buttons below.
 
 You need to turn in a detailed report documenting how and why you are able (or,
 in the case of failure, unable) to solve these DLP instances on LMS before
-February 13, 2022.
+February 16, 2022.
 
 Name: <textarea id="name" rows="1" cols="24">Chen-Mou Cheng</textarea> <button
 type="button" onclick="generate_challenges()">Generate DLP challenges</button>
