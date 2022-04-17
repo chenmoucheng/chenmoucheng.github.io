@@ -289,70 +289,6 @@ for the same term DAG:
 (7,[])
 ```
 
-**Definition.** A
-  [*graph homomorphism*](https://en.wikipedia.org/wiki/Graph_homomorphism#Definitions)
-  φ from a graph G = (V,E) to G' = (V',E') is a function from V to V'
-  that *preserves* the graph structure of G; that is, for any edge e =
-  (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a bijective
-  function φ from V to V' is a
-  [*graph isomorphism*](https://en.wikipedia.org/wiki/Graph_isomorphism)
-  if both φ and its inverse are graph homomorphisms from G to G',
-  respectively. In this case, the two graphs G and G' are *isomorphic*
-  to each other.
-
-Given a term, `term-graph` can also generate a random, isomorphic term DAG:
-
-```
-; h(g(c,x2),f(x2),f(x0))
-; 6
-3 -> 2
-4 -> 7
-4 -> 2
-5 -> 0
-6 -> 4
-6 -> 3
-6 -> 5
-```
-
-```
-; 4
-4 -> 7
-4 -> 6
-4 -> 5
-5 -> 0
-6 -> 2
-7 -> 3
-7 -> 2
-```
-
-It is easy to verify that these two graphs are isomorphic by the
-following vertex function φ:
-
-v|0|2|3|4|5|6|7
----:|---:|---:|---:|---:|---:|---:|---:
-φ(v)|0|2|6|7|5|4|3
-
-Now we can apply φ to every vertex in the adjacency-list
-representation of the term DAG in our running example and arrive at
-the representation of the other, isomorphic term DAG:
-
-```
-(0,[])
-(2,[])
-(3,[])
-(4,[7,6,5])
-(5,[0])
-(6,[2])
-(7,[3,2])
-```
-
-**Exercise.** The [`term-graph`](https://term-graph-iedy2lhg3a-an.a.run.app/)
-  can also generate a random term whose term DAG has at least certain number of
-  vertices and edges.  Run it a few times, generate a pair of larger, isomorphic
-  term DAGs, and compute the isomorphism between them.  Visualize both term DAGs
-  using [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and convince
-  yourself that isomorphic graphs are indeed "the same".
-
 ## Basic data structures
 
 To represent, e.g., graphs with a custom datatype in C, we typically
@@ -460,6 +396,72 @@ void freeListOfEdges(ListOfEdges *es);                             // free the m
  */
 
 ```
+
+## Graph homomorphisms
+
+**Definition.** A
+  [*graph homomorphism*](https://en.wikipedia.org/wiki/Graph_homomorphism#Definitions)
+  φ from a graph G = (V,E) to G' = (V',E') is a function from V to V'
+  that *preserves* the graph structure of G; that is, for any edge e =
+  (s,t) of G, (φ(s),φ(t)) is an edge of G'. Furthermore, a bijective
+  function φ from V to V' is a
+  [*graph isomorphism*](https://en.wikipedia.org/wiki/Graph_isomorphism)
+  if both φ and its inverse are graph homomorphisms from G to G',
+  respectively. In this case, the two graphs G and G' are *isomorphic*
+  to each other.
+
+Given a term, `term-graph` can also generate a random, isomorphic term DAG:
+
+```
+; h(g(c,x2),f(x2),f(x0))
+; 6
+3 -> 2
+4 -> 7
+4 -> 2
+5 -> 0
+6 -> 4
+6 -> 3
+6 -> 5
+```
+
+```
+; 4
+4 -> 7
+4 -> 6
+4 -> 5
+5 -> 0
+6 -> 2
+7 -> 3
+7 -> 2
+```
+
+It is easy to verify that these two graphs are isomorphic by the
+following vertex function φ:
+
+v|0|2|3|4|5|6|7
+---:|---:|---:|---:|---:|---:|---:|---:
+φ(v)|0|2|6|7|5|4|3
+
+Now we can apply φ to every vertex in the adjacency-list
+representation of the term DAG in our running example and arrive at
+the representation of the other, isomorphic term DAG:
+
+```
+(0,[])
+(2,[])
+(3,[])
+(4,[7,6,5])
+(5,[0])
+(6,[2])
+(7,[3,2])
+```
+
+**Exercise.** The [`term-graph`](https://term-graph-iedy2lhg3a-an.a.run.app/)
+  can also generate a random term whose term DAG has at least certain number of
+  vertices and edges.  Run it a few times, generate a pair of larger, isomorphic
+  term DAGs, and compute the isomorphism between them.  Visualize both term DAGs
+  using [http://arborjs.org/halfviz](http://arborjs.org/halfviz/) and convince
+  yourself that isomorphic graphs are indeed "the same".
 
 ## Topological sorts of a directed graph, revisited
 
